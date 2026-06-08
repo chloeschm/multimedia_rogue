@@ -1,5 +1,10 @@
-import 'input_phase.dart';
-import 'action_type.dart';
+enum ActionType {
+  swapMedium, shoot, moveUp, moveDown, moveLeft, moveRight
+}
+
+enum InputPhase {
+  none, pressed, released
+}
 
 class InputAction {
   final InputPhase phase;

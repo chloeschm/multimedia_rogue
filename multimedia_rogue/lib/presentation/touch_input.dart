@@ -1,8 +1,6 @@
 import 'dart:async';
 
-import 'package:multimedia_rogue/domain/entities/action_type.dart';
 import 'package:multimedia_rogue/domain/entities/input_action.dart';
-import 'package:multimedia_rogue/domain/entities/input_phase.dart';
 import 'package:multimedia_rogue/domain/repositories/input_handler.dart';
 
 class TouchInput implements InputHandler {
