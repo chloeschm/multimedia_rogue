@@ -1,4 +1,4 @@
-import 'models/medium.dart';
+import 'entities/medium.dart';
 
 class Palatte {
   final List<Medium> _mediums;
