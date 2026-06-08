@@ -1,3 +1,3 @@
 enum ActionType {
-  swapMedium, shoot, move
+  swapMedium, shoot, moveUp, moveDown, moveLeft, moveRight
 }
