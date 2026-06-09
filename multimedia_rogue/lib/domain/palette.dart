@@ -1,9 +1,9 @@
 import 'entities/medium.dart';
 
-class Palatte {
+class Palette {
   final List<Medium> _mediums;
   int _activeMedium;
-  Palatte({required List<Medium> mediums, required int activeMedium})
+  Palette({required List<Medium> mediums, required int activeMedium})
       : _mediums = mediums,
         _activeMedium = activeMedium;
 
@@ -20,6 +20,10 @@ class Palatte {
     if (_activeMedium >= _mediums.length) {
       _activeMedium = 0;
     }
+  }
+
+  void nextMedium() {
+    switchMedium(_activeMedium + 1);
   }
 
   Medium get currentMedium {
