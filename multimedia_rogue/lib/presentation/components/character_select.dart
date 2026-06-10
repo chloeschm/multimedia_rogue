@@ -1,24 +1,33 @@
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
+import 'package:multimedia_rogue/main.dart';
 
-class CharacterSelect extends SpriteComponent with TapCallbacks {
-  late Sprite girlSprite;
-  late Sprite boySprite;
-  late Sprite androSprite;
-
+class CharacterSelect extends PositionComponent with HasGameReference<MyGame> {
   @override
   Future<void> onLoad() async {
-    girlSprite = await Sprite.load('girl_character.png'); 
-    size = Vector2(400, 300);
-    position = Vector2(50, 100);
+    final characterWidth = game.size.x * 0.15;
+    final characterHeight = game.size.y * 0.25;
+    final padding = game.size.x * 0.05;
+    final totalWidth = (characterWidth * 3) + (padding * 2);
 
-    boySprite = await Sprite.load('boy_character.png');
-    size = Vector2(400, 300);
-    position = Vector2(500, 100);
+    size = Vector2(totalWidth, characterHeight);
 
-    androSprite = await Sprite.load('andro_character.png');
-    size = Vector2(400, 300);
-    position = Vector2(950, 100);
+    final girl = SpriteComponent()
+      ..sprite = await Sprite.load('girl_character.png')
+      ..size = Vector2(characterWidth, characterHeight)
+      ..position = Vector2(0, 0);
+
+    final boy = SpriteComponent()
+      ..sprite = await Sprite.load('boy_character.png')
+      ..size = Vector2(characterWidth, characterHeight)
+      ..position = Vector2(characterWidth + padding, 0);
+
+    final andro = SpriteComponent()
+      ..sprite = await Sprite.load('andro_character.png')
+      ..size = Vector2(characterWidth, characterHeight)
+      ..position = Vector2((characterWidth + padding) * 2, 0);
+
+    addAll([girl, boy, andro]);
   }
 
   @override
