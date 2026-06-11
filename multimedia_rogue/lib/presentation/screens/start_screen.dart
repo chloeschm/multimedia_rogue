@@ -1,6 +1,5 @@
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
-import 'package:multimedia_rogue/main.dart';
 
 import 'package:multimedia_rogue/presentation/components/character_select.dart';
 import 'package:multimedia_rogue/presentation/components/draft_counter.dart';
@@ -8,28 +7,14 @@ import 'package:multimedia_rogue/presentation/components/quit_button.dart';
 import 'package:multimedia_rogue/presentation/components/settings_button.dart';
 import 'package:multimedia_rogue/presentation/components/start_button.dart';
 import 'package:multimedia_rogue/presentation/components/title.dart';
+import 'package:multimedia_rogue/presentation/mixins/page_screen.dart';
 
-class StartScreen extends PositionComponent
-    with TapCallbacks, HasGameReference<MyGame> {
+class StartScreen extends PageScreen
+    with TapCallbacks {
   @override
   Future<void> onLoad() async {
+    await super.onLoad();
     size = game.size;
-
-    final bg = SpriteComponent()
-      ..sprite = await Sprite.load('background.png')
-      ..size = size;
-    add(bg);
-
-    final paperSize = size * 0.8;
-    final paperPosition = Vector2(
-      (size.x - paperSize.x) / 2,
-      (size.y - paperSize.y) / 2,
-    );
-    final paper = SpriteComponent()
-      ..sprite = await Sprite.load('paper.png')
-      ..size = paperSize
-      ..position = paperPosition;
-    add(paper);
 
     final title = Title();
     title.size = Vector2(paperSize.x * 0.65, paperSize.y * 0.19);
