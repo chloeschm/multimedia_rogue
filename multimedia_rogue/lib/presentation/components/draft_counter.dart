@@ -3,8 +3,10 @@ import 'dart:ui' as ui;
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:multimedia_rogue/main.dart';
+import '../mixins/drop_shadow.dart';
 
-class DraftCounter extends PositionComponent with HasGameReference<MyGame> {
+
+class DraftCounter extends PositionComponent with HasGameReference<MyGame>, HasDropShadow {
   late SpriteComponent _labelSprite;
   late SpriteComponent _digitSprite;
   late ui.Image _spriteSheetImage;

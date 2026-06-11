@@ -2,7 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:multimedia_rogue/main.dart';
 
-class CharacterSelect extends PositionComponent with HasGameReference<MyGame> {
+class CharacterSelect extends PositionComponent with HasGameReference<MyGame>, TapCallbacks {
   @override
   Future<void> onLoad() async {
     final characterWidth = game.size.x * 0.15;

@@ -1,8 +1,9 @@
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame_audio/flame_audio.dart';
+import '../mixins/drop_shadow.dart';
 
-class StartButton extends SpriteComponent with TapCallbacks {
+class StartButton extends SpriteComponent with TapCallbacks, HasDropShadow {
   late Sprite _pressedSprite;
   late Sprite _normalSprite;
 
