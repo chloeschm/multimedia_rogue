@@ -1,8 +1,11 @@
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
+import 'package:flutter/material.dart';
 import 'package:multimedia_rogue/main.dart';
 
-class CharacterSelect extends PositionComponent with HasGameReference<MyGame>, TapCallbacks {
+class CharacterSelect extends PositionComponent with HasGameReference<MyGame> {
+  final List<_CharacterButton> _buttons = [];
+
   @override
   Future<void> onLoad() async {
     final characterWidth = game.size.x * 0.15;
@@ -12,26 +15,50 @@ class CharacterSelect extends PositionComponent with HasGameReference<MyGame>, T
 
     size = Vector2(totalWidth, characterHeight);
 
-    final girl = SpriteComponent()
-      ..sprite = await Sprite.load('girl_character.png')
-      ..size = Vector2(characterWidth, characterHeight)
-      ..position = Vector2(0, 0);
+    final configs = [
+      ('girl_character.png', Vector2(0, 0)),
+      ('boy_character.png', Vector2(characterWidth + padding, 0)),
+      ('andro_character.png', Vector2((characterWidth + padding) * 2, 0)),
+    ];
 
-    final boy = SpriteComponent()
-      ..sprite = await Sprite.load('boy_character.png')
-      ..size = Vector2(characterWidth, characterHeight)
-      ..position = Vector2(characterWidth + padding, 0);
+    for (final (file, pos) in configs) {
+      final button = _CharacterButton(
+        spriteFile: file,
+        onSelected: _onCharacterSelected,
+      )
+        ..size = Vector2(characterWidth, characterHeight)
+        ..position = pos;
+      _buttons.add(button);
+      add(button);
+    }
+  }
 
-    final andro = SpriteComponent()
-      ..sprite = await Sprite.load('andro_character.png')
-      ..size = Vector2(characterWidth, characterHeight)
-      ..position = Vector2((characterWidth + padding) * 2, 0);
+  void _onCharacterSelected(_CharacterButton selected) {
+    for (final button in _buttons) {
+      button.setSelected(button == selected);
+    }
+  }
+}
 
-    addAll([girl, boy, andro]);
+class _CharacterButton extends SpriteComponent with TapCallbacks {
+  final String spriteFile;
+  final void Function(_CharacterButton) onSelected;
+
+  _CharacterButton({required this.spriteFile, required this.onSelected});
+
+  @override
+  Future<void> onLoad() async {
+    sprite = await Sprite.load(spriteFile);
+  }
+
+  void setSelected(bool selected) {
+    paint.colorFilter = selected
+        ? ColorFilter.mode(Colors.black.withOpacity(0.4), BlendMode.darken)
+        : null;
   }
 
   @override
   void onTapDown(TapDownEvent event) {
-    // select character later
+    onSelected(this);
   }
 }

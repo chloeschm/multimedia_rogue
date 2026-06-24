@@ -8,18 +8,18 @@ class WeaponSlots extends PositionComponent with HasGameReference<MyGame> {
 
   @override
   Future<void> onLoad() async {
-    final slotWidth = game.size.x * 0.1;
-    final slotHeight = game.size.y * 0.1;
-    final padding = game.size.x * 0.02;
+    final slotWidth = game.size.x * 0.09;
+    final slotHeight = game.size.y * 0.09;
+    final padding = game.size.x * 0.01;
     size = Vector2((slotWidth * 6) + (padding * 5), slotHeight);
 
     final slotFiles = [
-      'pencil.png',
-      'pen.png',
-      'marker.png',
-      'brush.png',
-      'watercolor.png',
-      'pastel.png',
+      'pencil.jpg',
+      'pen.jpg',
+      'marker.jpg',
+      'brush.jpg',
+      'watercolor.jpg',
+      'pastel.jpg',
     ];
 
     for (int i = 0; i < slotFiles.length; i++) {
