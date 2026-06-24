@@ -18,8 +18,8 @@ class MenuButton extends SpriteComponent
       Colors.black.withOpacity(0.4),
       BlendMode.darken,
     );
-    game.router.pop(); // close pause
-    game.router.pop(); // close game, back to start
+    game.router.pop();
+    game.router.pop(); 
   }
 
   @override
