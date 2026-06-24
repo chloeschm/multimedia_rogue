@@ -34,6 +34,7 @@ class CharacterSelect extends PositionComponent with HasGameReference<MyGame> {
   }
 
   void _onCharacterSelected(_CharacterButton selected) {
+    game.selectedCharacter = selected.spriteFile;
     for (final button in _buttons) {
       button.setSelected(button == selected);
     }

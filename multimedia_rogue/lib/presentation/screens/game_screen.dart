@@ -1,6 +1,8 @@
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:multimedia_rogue/main.dart';
+import 'package:multimedia_rogue/presentation/components/character_display.dart';
+import 'package:multimedia_rogue/presentation/components/pause_button.dart';
 import 'package:multimedia_rogue/presentation/components/settings_button.dart';
 import 'package:multimedia_rogue/presentation/components/weapon_slots.dart';
 import 'package:multimedia_rogue/presentation/mixins/drop_shadow.dart';
@@ -13,6 +15,7 @@ class GameScreen extends PositionComponent
     await super.onLoad();
     size = game.size;
     await add(PencilWorld());
+    add(CharacterDisplay());
 
     final healthBar = SpriteComponent()
       ..sprite = await Sprite.load('health10.png');
@@ -20,13 +23,23 @@ class GameScreen extends PositionComponent
     healthBar.position = Vector2(game.size.x * 0.01, game.size.y * 0.03);
     add(healthBar);
 
+    final buttonWidth = game.size.x * 0.1;
+    final buttonHeight = game.size.y * 0.05;
+    final buttonX = game.size.x - buttonWidth - game.size.x * 0.01;
+    final buttonGap = game.size.y * 0.01;
+
     final settingsButton = SettingsButton();
-    settingsButton.size = Vector2(game.size.x * 0.1, game.size.y * 0.05);
-    settingsButton.position = Vector2(
-      game.size.x - settingsButton.size.x - game.size.x * 0.01,
-      game.size.y * 0.03,
-    );
+    settingsButton.size = Vector2(buttonWidth, buttonHeight);
+    settingsButton.position = Vector2(buttonX, game.size.y * 0.01);
     add(settingsButton);
+
+    final pauseButton = PauseButton();
+    pauseButton.size = Vector2(buttonWidth, buttonHeight);
+    pauseButton.position = Vector2(
+      buttonX,
+      settingsButton.position.y + buttonHeight + buttonGap,
+    );
+    add(pauseButton);
 
     final healthBarRight = game.size.x * 0.21;
     final settingsLeft = game.size.x * 0.89;
