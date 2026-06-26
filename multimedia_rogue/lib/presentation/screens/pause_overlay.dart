@@ -6,6 +6,18 @@ import 'package:multimedia_rogue/presentation/components/resume_button.dart';
 
 class PauseOverlay extends PositionComponent with HasGameReference<MyGame> {
   @override
+  void onMount() {
+    super.onMount();
+    game.pauseEngine();
+  }
+
+  @override
+  void onRemove() {
+    game.resumeEngine();
+    super.onRemove();
+  }
+
+  @override
   Future<void> onLoad() async {
     size = game.size;
 

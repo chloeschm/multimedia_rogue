@@ -1,10 +1,13 @@
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
+import 'package:flutter/foundation.dart' show defaultTargetPlatform, kIsWeb, TargetPlatform;
 import 'package:multimedia_rogue/main.dart';
 import 'package:multimedia_rogue/presentation/components/character_display.dart';
 import 'package:multimedia_rogue/presentation/components/pause_button.dart';
 import 'package:multimedia_rogue/presentation/components/settings_button.dart';
 import 'package:multimedia_rogue/presentation/components/weapon_slots.dart';
+import 'package:multimedia_rogue/presentation/input/joystick_adapter.dart';
+import 'package:multimedia_rogue/presentation/input/keyboard_adapter.dart';
 import 'package:multimedia_rogue/presentation/mixins/drop_shadow.dart';
 import 'package:multimedia_rogue/presentation/world_overlays/pencil_world.dart';
 
@@ -16,6 +19,14 @@ class GameScreen extends PositionComponent
     size = game.size;
     await add(PencilWorld());
     add(CharacterDisplay());
+
+    // Input adapters — keyboard always active (web + desktop).
+    // Joystick stub added on mobile; wire it up when implementing touch controls.
+    add(KeyboardAdapter());
+    final isMobile = !kIsWeb &&
+        (defaultTargetPlatform == TargetPlatform.android ||
+            defaultTargetPlatform == TargetPlatform.iOS);
+    if (isMobile) add(JoystickAdapter());
 
     final healthBar = SpriteComponent()
       ..sprite = await Sprite.load('health10.png');
