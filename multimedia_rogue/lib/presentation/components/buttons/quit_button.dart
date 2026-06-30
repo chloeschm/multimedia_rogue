@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flame_audio/flame_audio.dart';
-import '../mixins/drop_shadow.dart';
+import '../../mixins/drop_shadow.dart';
 
 
 class QuitButton extends SpriteComponent with TapCallbacks, HasDropShadow {

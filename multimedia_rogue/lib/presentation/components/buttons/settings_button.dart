@@ -2,13 +2,12 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flutter/material.dart';
 import 'package:multimedia_rogue/main.dart';
-import '../mixins/drop_shadow.dart';
+import '../../mixins/drop_shadow.dart';
 
-class PauseButton extends SpriteComponent
-    with TapCallbacks, HasDropShadow, HasGameReference<MyGame> {
+class SettingsButton extends SpriteComponent with TapCallbacks, HasDropShadow, HasGameReference<MyGame> {
   @override
   Future<void> onLoad() async {
-    sprite = await Sprite.load('pause.png');
+    sprite = await Sprite.load('settings_button.png');
     paint.colorFilter = null;
   }
 
@@ -18,8 +17,9 @@ class PauseButton extends SpriteComponent
       Colors.black.withOpacity(0.4),
       BlendMode.darken,
     );
-    game.router.pushNamed('pause');
+    game.router.pushNamed('settings');
   }
+
 
   @override
   void onTapUp(TapUpEvent event) {

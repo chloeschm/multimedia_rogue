@@ -2,7 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flutter/material.dart';
 import 'package:multimedia_rogue/main.dart';
-import '../mixins/drop_shadow.dart';
+import '../../mixins/drop_shadow.dart';
 
 class MenuButton extends SpriteComponent
     with TapCallbacks, HasDropShadow, HasGameReference<MyGame> {
@@ -18,8 +18,9 @@ class MenuButton extends SpriteComponent
       Colors.black.withOpacity(0.4),
       BlendMode.darken,
     );
-    game.router.pop();
-    game.router.pop(); 
+    game.resumeEngine();                      
+    game.router.pop();                      
+    game.router.pushReplacementNamed('start'); 
   }
 
   @override

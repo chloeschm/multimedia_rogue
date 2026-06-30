@@ -33,6 +33,7 @@ class ResumeButton extends PositionComponent
   @override
   void onTapDown(TapDownEvent event) {
     _pressed = true;
+    game.resumeEngine();
     game.router.pop();
   }
 

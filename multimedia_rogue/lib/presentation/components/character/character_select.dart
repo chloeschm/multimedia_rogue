@@ -6,10 +6,17 @@ import 'package:multimedia_rogue/main.dart';
 class CharacterSelect extends PositionComponent with HasGameReference<MyGame> {
   final List<_CharacterButton> _buttons = [];
 
+
+  final bool portraitMode;
+
+  CharacterSelect({this.portraitMode = false});
+
   @override
   Future<void> onLoad() async {
     final characterWidth = game.size.x * 0.15;
-    final characterHeight = game.size.y * 0.25;
+    final characterHeight = portraitMode
+        ? characterWidth * 1.3   
+        : game.size.y * 0.25;   
     final padding = game.size.x * 0.05;
     final totalWidth = (characterWidth * 3) + (padding * 2);
 

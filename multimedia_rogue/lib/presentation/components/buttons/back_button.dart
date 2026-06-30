@@ -1,13 +1,16 @@
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flutter/material.dart';
-import 'package:multimedia_rogue/main.dart';
-import '../mixins/drop_shadow.dart';
+import '../../mixins/drop_shadow.dart';
 
-class SettingsButton extends SpriteComponent with TapCallbacks, HasDropShadow, HasGameReference<MyGame> {
+class BackButton extends SpriteComponent with TapCallbacks, HasDropShadow {
+  final VoidCallback onPressed;
+
+  BackButton({required this.onPressed});
+
   @override
   Future<void> onLoad() async {
-    sprite = await Sprite.load('settings_button.png');
+    sprite = await Sprite.load('back.png');
     paint.colorFilter = null;
   }
 
@@ -17,9 +20,8 @@ class SettingsButton extends SpriteComponent with TapCallbacks, HasDropShadow, H
       Colors.black.withOpacity(0.4),
       BlendMode.darken,
     );
-    game.router.pushNamed('settings');
+    onPressed();
   }
-
 
   @override
   void onTapUp(TapUpEvent event) {

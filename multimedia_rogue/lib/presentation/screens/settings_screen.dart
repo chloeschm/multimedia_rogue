@@ -2,7 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flame/events.dart';
 import 'package:flutter/widgets.dart';
-import 'package:multimedia_rogue/presentation/components/back_button.dart';
+import 'package:multimedia_rogue/presentation/components/buttons/back_button.dart';
 import 'package:multimedia_rogue/presentation/components/slider_bar.dart';
 import 'package:multimedia_rogue/presentation/components/slider_handle.dart';
 import 'package:multimedia_rogue/presentation/components/volume_label.dart';

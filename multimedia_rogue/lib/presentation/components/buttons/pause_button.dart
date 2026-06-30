@@ -1,16 +1,14 @@
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flutter/material.dart';
-import '../mixins/drop_shadow.dart';
+import 'package:multimedia_rogue/main.dart';
+import '../../mixins/drop_shadow.dart';
 
-class BackButton extends SpriteComponent with TapCallbacks, HasDropShadow {
-  final VoidCallback onPressed;
-
-  BackButton({required this.onPressed});
-
+class PauseButton extends SpriteComponent
+    with TapCallbacks, HasDropShadow, HasGameReference<MyGame> {
   @override
   Future<void> onLoad() async {
-    sprite = await Sprite.load('back.png');
+    sprite = await Sprite.load('pause.png');
     paint.colorFilter = null;
   }
 
@@ -20,7 +18,7 @@ class BackButton extends SpriteComponent with TapCallbacks, HasDropShadow {
       Colors.black.withOpacity(0.4),
       BlendMode.darken,
     );
-    onPressed();
+    game.router.pushNamed('pause');
   }
 
   @override

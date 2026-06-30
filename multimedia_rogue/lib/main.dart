@@ -2,6 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart' hide Route;
+import 'package:flutter/services.dart';
 import 'package:multimedia_rogue/domain/entities/medium.dart';
 import 'package:multimedia_rogue/presentation/input/movement_controller.dart';
 import 'package:multimedia_rogue/presentation/screens/game_screen.dart';
@@ -11,6 +12,7 @@ import 'package:multimedia_rogue/presentation/screens/settings_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   final game = MyGame();
   runApp(GameWidget(game: game));
 }
