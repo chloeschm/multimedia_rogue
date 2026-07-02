@@ -3,6 +3,7 @@ import 'package:flame/events.dart';
 import 'package:flutter/material.dart';
 import 'package:multimedia_rogue/domain/entities/medium.dart';
 import 'package:multimedia_rogue/main.dart';
+import 'package:multimedia_rogue/presentation/components/character/character_display.dart';
 
 class WeaponSlots extends PositionComponent with HasGameReference<MyGame> {
   final List<_WeaponSlot> _slots = [];
@@ -19,26 +20,22 @@ class WeaponSlots extends PositionComponent with HasGameReference<MyGame> {
 
   @override
   Future<void> onLoad() async {
-    final slotWidth = game.size.x * 0.09;
+    final slotWidth  = game.size.x * 0.09;
     final slotHeight = game.size.y * 0.09;
-    final padding = game.size.x * 0.01;
+    final padding    = game.size.x * 0.01;
     size = Vector2((slotWidth * 6) + (padding * 5), slotHeight);
 
     final slotFiles = [
-      'pencil.jpg',
-      'pen.jpg',
-      'marker.jpg',
-      'brush.jpg',
-      'watercolor.jpg',
-      'pastel.jpg',
+      'pencil.jpg', 'pen.jpg', 'marker.jpg',
+      'brush.jpg',  'watercolor.jpg', 'pastel.jpg',
     ];
 
     for (int i = 0; i < slotFiles.length; i++) {
       final slot = _WeaponSlot(
         spriteFile: slotFiles[i],
-        position: Vector2(i * (slotWidth + padding), 0),
-        size: Vector2(slotWidth, slotHeight),
-        onTap: () => _selectSlot(i),
+        position:   Vector2(i * (slotWidth + padding), 0),
+        size:       Vector2(slotWidth, slotHeight),
+        onTap:      () => _selectSlot(i),
       );
       _slots.add(slot);
       add(slot);
@@ -52,24 +49,25 @@ class WeaponSlots extends PositionComponent with HasGameReference<MyGame> {
   void _selectSlot(int index) {
     if (index < 0 || index >= _slots.length) return;
     if (_slots[index].isLocked) return;
+    if (index == _selectedIndex) return;
     _slots[_selectedIndex].deselect();
-    _selectedIndex = index;
+    _selectedIndex      = index;
     _slots[_selectedIndex].select();
     game.selectedMedium = _slotMediums[index];
+
+    (game.characterDisplay as CharacterDisplay?)?.showScribble();
   }
 
   void unlockSlot(int index) {
-    if (index >= 0 && index < _slots.length) {
-      _slots[index].unlock();
-    }
+    if (index >= 0 && index < _slots.length) _slots[index].unlock();
   }
 }
 
 
 class _WeaponSlot extends SpriteComponent with TapCallbacks {
-  final String spriteFile;
+  final String       spriteFile;
   final VoidCallback onTap;
-  bool isLocked = true;
+  bool isLocked   = true;
   bool isSelected = false;
 
   _WeaponSlot({
@@ -85,28 +83,14 @@ class _WeaponSlot extends SpriteComponent with TapCallbacks {
     _applyState();
   }
 
-  void unlock() {
-    isLocked = false;
-    _applyState();
-  }
-
-  void select() {
-    isSelected = true;
-    _applyState();
-  }
-
-  void deselect() {
-    isSelected = false;
-    _applyState();
-  }
+  void unlock()   { isLocked   = false; _applyState(); }
+  void select()   { isSelected = true;  _applyState(); }
+  void deselect() { isSelected = false; _applyState(); }
 
   void _applyState() {
     if (isLocked) {
       paint = Paint()
-        ..colorFilter = const ColorFilter.mode(
-          Color(0xFF888888),
-          BlendMode.multiply,
-        )
+        ..colorFilter = const ColorFilter.mode(Color(0xFF888888), BlendMode.multiply)
         ..color = const Color(0xFFFFFFFF).withValues(alpha: 0.45);
     } else if (isSelected) {
       paint = Paint()..color = const Color(0xFFFFFFFF);

@@ -1,5 +1,6 @@
 import 'package:flame/components.dart';
-import 'package:flame/sprite.dart';
+import 'package:flame/effects.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:multimedia_rogue/data/medium_weapon_assets.dart';
 import 'package:multimedia_rogue/data/weapon_attachment_points.dart';
 import 'package:multimedia_rogue/domain/entities/medium.dart';
@@ -14,7 +15,14 @@ class CharacterDisplay extends PositionComponent with HasGameReference<MyGame> {
   @override
   void onMount() {
     super.onMount();
+    game.characterDisplay = this;
     _refresh();
+  }
+
+  @override
+  void onRemove() {
+    if (game.characterDisplay == this) game.characterDisplay = null;
+    super.onRemove();
   }
 
   @override
@@ -34,6 +42,16 @@ class CharacterDisplay extends PositionComponent with HasGameReference<MyGame> {
     if (dir.length > 0) {
       _sprite!.position += dir * game.movementController.speed * dt;
     }
+  }
+
+  void showScribble() async {
+    final sprite = await Sprite.load('scribble.png');
+    final charSize = _sprite?.size ?? Vector2(game.size.x * 0.10, game.size.y * 0.20);
+    final charPos  = _sprite?.position ?? Vector2(game.size.x * 0.05, game.size.y * 0.55);
+    final effect = _ScribbleEffect(sprite: sprite, charSize: charSize)
+      ..position = charPos;
+    add(effect);
+    FlameAudio.play('scribble.wav');
   }
 
   void _refresh() async {
@@ -57,25 +75,28 @@ class CharacterDisplay extends PositionComponent with HasGameReference<MyGame> {
 
     if (config != null) {
       final image = await game.images.load(config.spriteSheet);
-      final sheet = SpriteSheet(
-        image: image,
-        srcSize: Vector2(config.frameWidth, config.frameHeight),
-      );
 
-      SpriteAnimation makeAnim(CharacterAnimationRow row) =>
-          sheet.createAnimation(
-            row: row.rowIndex,
-            stepTime: row.stepTime,
-            from: 0,
-            to: row.frameCount,
-            loop: true,
+      SpriteAnimation makeAnim(CharacterAnimationRow row) {
+        final fh = row.frameHeightOverride ?? config.frameHeight;
+        final y0 = row.rowIndex * config.frameHeight + row.yOffset;
+        final frames = List.generate(row.frameCount, (col) {
+          return SpriteAnimationFrame(
+            Sprite(
+              image,
+              srcPosition: Vector2(col * config.frameWidth, y0),
+              srcSize: Vector2(config.frameWidth, fh),
+            ),
+            row.stepTime,
           );
+        });
+        return SpriteAnimation(frames, loop: true);
+      }
 
-      final animations = <AnimationState, SpriteAnimation>{};
-      final stepTimes = <AnimationState, double>{};
+      final animations  = <AnimationState, SpriteAnimation>{};
+      final stepTimes   = <AnimationState, double>{};
       for (final entry in config.animations.entries) {
         animations[entry.key] = makeAnim(entry.value);
-        stepTimes[entry.key] = entry.value.stepTime;
+        stepTimes[entry.key]  = entry.value.stepTime;
       }
 
       newSprite = _AnimatedCharacter(
@@ -83,45 +104,43 @@ class CharacterDisplay extends PositionComponent with HasGameReference<MyGame> {
         stepTimes: stepTimes,
         medium: medium,
       )
-        ..size = Vector2(w, h)
+        ..size     = Vector2(w, h)
         ..position = pos;
     } else {
       newSprite = _StaticCharacter()
-        ..sprite = await Sprite.load(file)
-        ..size = Vector2(w, h)
+        ..sprite   = await Sprite.load(file)
+        ..size     = Vector2(w, h)
         ..position = pos;
     }
 
     if (generation != _generation) return;
     _sprite = newSprite;
     add(_sprite!);
+
+    showScribble();
   }
 }
 
-// ---------------------------------------------------------------------------
 
 class _AnimatedCharacter extends SpriteAnimationComponent
     with HasDropShadow, HasGameReference<MyGame> {
   final Map<AnimationState, SpriteAnimation> _animations;
-
-  /// Step time per state — used to compute current frame manually so we
-  /// don't depend on animationTicker being non-null.
   final Map<AnimationState, double> _stepTimes;
   final MediumType? medium;
 
-  AnimationState _currentState = AnimationState.idle;
-  int _currentFrameIndex = 0;
-  double _elapsed = 0; // time within current animation loop
+  AnimationState _currentState    = AnimationState.idle;
+  int            _currentFrameIndex = 0;
+  double         _elapsed         = 0;
 
-  AnimationState get currentState => _currentState;
-  int get currentFrameIndex => _currentFrameIndex;
+  AnimationState get currentState      => _currentState;
+  int            get currentFrameIndex => _currentFrameIndex;
 
   _AnimatedCharacter({
     required Map<AnimationState, SpriteAnimation> animations,
     required Map<AnimationState, double> stepTimes,
     this.medium,
   })  : _animations = animations,
-        _stepTimes = stepTimes,
+        _stepTimes  = stepTimes,
         super(animation: animations[AnimationState.idle], anchor: Anchor.center);
 
   @override
@@ -130,13 +149,13 @@ class _AnimatedCharacter extends SpriteAnimationComponent
 
     final asset = medium != null ? mediumWeaponAssets[medium!] : null;
     if (asset != null) {
-      final img = await game.images.load(asset.spritePath);
+      final img        = await game.images.load(asset.spritePath);
       final weaponSize = Vector2(size.x * 0.32, size.x * 0.32);
-      final weapon = _WeaponSprite(host: this)
+      final weapon     = _WeaponSprite(host: this)
         ..sprite = Sprite(img)
-        ..size = weaponSize
+        ..size   = weaponSize
         ..anchor = Anchor.center
-        ..angle = asset.angle;
+        ..angle  = asset.angle;
       add(weapon);
     }
   }
@@ -144,17 +163,15 @@ class _AnimatedCharacter extends SpriteAnimationComponent
   @override
   void update(double dt) {
     super.update(dt);
-
-    // Manual frame counter — does not rely on animationTicker.currentIndex.
     final anim = _animations[_currentState];
     if (anim != null && anim.frames.isNotEmpty) {
-      final stepTime = _stepTimes[_currentState] ?? 0.12;
-      _elapsed += dt;
+      final stepTime   = _stepTimes[_currentState] ?? 0.12;
+      _elapsed        += dt;
       final frameCount = anim.frames.length;
-      final totalDuration = stepTime * frameCount;
-      if (totalDuration > 0) {
-        final looped = _elapsed % totalDuration;
-        _currentFrameIndex = (looped / stepTime).floor().clamp(0, frameCount - 1);
+      final total      = stepTime * frameCount;
+      if (total > 0) {
+        final looped         = _elapsed % total;
+        _currentFrameIndex   = (looped / stepTime).floor().clamp(0, frameCount - 1);
       }
     }
   }
@@ -163,10 +180,10 @@ class _AnimatedCharacter extends SpriteAnimationComponent
     if (_currentState == state) return;
     final next = _animations[state] ?? _animations[AnimationState.idle];
     if (next == null) return;
-    _currentState = state;
+    _currentState      = state;
     _currentFrameIndex = 0;
-    _elapsed = 0; // restart timer so frame 0 plays first
-    animation = next;
+    _elapsed           = 0;
+    animation          = next;
   }
 
   void setFacing(double dirX) {
@@ -175,31 +192,43 @@ class _AnimatedCharacter extends SpriteAnimationComponent
   }
 }
 
-// ---------------------------------------------------------------------------
 
 class _WeaponSprite extends SpriteComponent {
   final _AnimatedCharacter host;
-
   _WeaponSprite({required this.host});
 
   @override
   void update(double dt) {
     super.update(dt);
-
     final medium = host.medium;
     if (medium == null) return;
-
-    final offset = getAttachmentPoint(
-      medium,
-      host.currentState,
-      host.currentFrameIndex,
-    );
+    final offset = getAttachmentPoint(medium, host.currentState, host.currentFrameIndex);
     if (offset == null) return;
-
     position = Vector2(offset.x * host.size.x, offset.y * host.size.y);
   }
 }
 
-// ---------------------------------------------------------------------------
+
+class _ScribbleEffect extends SpriteComponent {
+  _ScribbleEffect({required Sprite sprite, required Vector2 charSize})
+      : super(
+          sprite: sprite,
+          size:   Vector2(charSize.x * 2.2, charSize.y * 1.4),
+          anchor: Anchor.center,
+        );
+
+  @override
+  Future<void> onLoad() async {
+    await super.onLoad();
+    add(OpacityEffect.fadeOut(
+      SequenceEffectController([
+        PauseEffectController(0.15, progress: 0.0),
+        LinearEffectController(0.40),
+      ]),
+    ));
+    add(RemoveEffect(delay: 0.55));
+  }
+}
+
 
 class _StaticCharacter extends SpriteComponent with HasDropShadow {}

@@ -23,6 +23,10 @@ class MyGame extends FlameGame
   final MovementController movementController = MovementController();
   String? selectedCharacter;
   MediumType? selectedMedium = MediumType.pencil;
+
+  /// Set by CharacterDisplay on mount so other components (e.g. WeaponSlots)
+  /// can trigger the scribble effect without direct tree traversal.
+  dynamic characterDisplay; // typed as dynamic to avoid circular imports
   @override
   Future<void> onLoad() async {
     router = RouterComponent(
