@@ -150,11 +150,8 @@ class CharacterDisplay extends PositionComponent
   ) {
     super.onCollisionStart(intersectionPoints, other);
     if (other is Enemy) {
-      game.playerHealth = (game.playerHealth - 1).clamp(0, 10);
-      game.healthBar?.updateHealth(game.playerHealth);
-      if (game.playerHealth <= 0) {
-        game.isDead = true;
-      }
+      game.player.takeDamage(1);
+      game.healthBar?.updateHealth(game.player.hp);
     }
   }
 }

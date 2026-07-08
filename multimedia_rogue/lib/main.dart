@@ -5,6 +5,7 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart' hide Route;
 import 'package:flutter/services.dart';
 import 'package:multimedia_rogue/domain/entities/medium.dart';
+import 'package:multimedia_rogue/domain/entities/player_health.dart';
 import 'package:multimedia_rogue/presentation/components/health_bar.dart';
 import 'package:multimedia_rogue/presentation/input/movement_controller.dart';
 import 'package:multimedia_rogue/presentation/screens/game_screen.dart';
@@ -27,12 +28,11 @@ class MyGame extends FlameGame
         HasKeyboardHandlerComponents
         {
   late final RouterComponent router;
-  int playerHealth = 10;
+  final PlayerHealth player = PlayerHealth();
   final MovementController movementController = MovementController();
   String? selectedCharacter;
   MediumType? selectedMedium = MediumType.pencil;
   HealthBar? healthBar;
-  bool isDead = false;
 
   dynamic characterDisplay;
   dynamic enemyDisplay;
