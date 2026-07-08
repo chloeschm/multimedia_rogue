@@ -1,10 +1,12 @@
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
-import 'package:flutter/foundation.dart' show defaultTargetPlatform, kIsWeb, TargetPlatform;
+import 'package:flutter/foundation.dart'
+    show defaultTargetPlatform, kIsWeb, TargetPlatform;
 import 'package:multimedia_rogue/main.dart';
 import 'package:multimedia_rogue/presentation/components/character/character_display.dart';
 import 'package:multimedia_rogue/presentation/components/buttons/pause_button.dart';
 import 'package:multimedia_rogue/presentation/components/buttons/settings_button.dart';
+import 'package:multimedia_rogue/presentation/components/health_bar.dart';
 import 'package:multimedia_rogue/presentation/components/weapon_slots.dart';
 import 'package:multimedia_rogue/presentation/input/joystick_adapter.dart';
 import 'package:multimedia_rogue/presentation/input/keyboard_adapter.dart';
@@ -17,21 +19,21 @@ class GameScreen extends PositionComponent
   Future<void> onLoad() async {
     await super.onLoad();
     size = game.size;
-    await add(PencilWorld());
+    add(PencilWorld());
     add(CharacterDisplay());
 
-    // Input adapters — keyboard always active (web + desktop).
-    // Joystick stub added on mobile; wire it up when implementing touch controls.
     add(KeyboardAdapter());
-    final isMobile = !kIsWeb &&
+    final isMobile =
+        !kIsWeb &&
         (defaultTargetPlatform == TargetPlatform.android ||
             defaultTargetPlatform == TargetPlatform.iOS);
     if (isMobile) add(JoystickAdapter());
 
-    final healthBar = SpriteComponent()
-      ..sprite = await Sprite.load('health10.png');
-    healthBar.size = Vector2(game.size.x * 0.2, game.size.y * 0.07);
-    healthBar.position = Vector2(game.size.x * 0.01, game.size.y * 0.03);
+    final healthBar = HealthBar();
+    Vector2 healthBarSize = Vector2(game.size.x * 0.2, game.size.y * 0.05);
+    healthBar.size = healthBarSize;
+    healthBar.position = Vector2(game.size.x * 0.01, game.size.y * 0.01);
+    game.healthBar = healthBar;
     add(healthBar);
 
     final buttonWidth = game.size.x * 0.1;
@@ -55,7 +57,8 @@ class GameScreen extends PositionComponent
     final healthBarRight = game.size.x * 0.21;
     final settingsLeft = game.size.x * 0.89;
     final slotsWidth = game.size.x * 0.59;
-    final slotsX = healthBarRight + (settingsLeft - healthBarRight - slotsWidth) / 2;
+    final slotsX =
+        healthBarRight + (settingsLeft - healthBarRight - slotsWidth) / 2;
 
     final weaponSlots = WeaponSlots();
     weaponSlots.position = Vector2(slotsX, game.size.y * 0.02);

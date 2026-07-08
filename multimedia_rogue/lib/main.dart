@@ -1,9 +1,11 @@
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart' hide Route;
 import 'package:flutter/services.dart';
 import 'package:multimedia_rogue/domain/entities/medium.dart';
+import 'package:multimedia_rogue/presentation/components/health_bar.dart';
 import 'package:multimedia_rogue/presentation/input/movement_controller.dart';
 import 'package:multimedia_rogue/presentation/screens/game_screen.dart';
 import 'package:multimedia_rogue/presentation/screens/pause_overlay.dart';
@@ -18,15 +20,22 @@ void main() {
 }
 
 class MyGame extends FlameGame
-    with HasCollisionDetection, HasGameReference<MyGame>, HasKeyboardHandlerComponents {
+    with
+        HasCollisionDetection,
+        CollisionCallbacks,
+        HasGameReference<MyGame>,
+        HasKeyboardHandlerComponents
+        {
   late final RouterComponent router;
+  int playerHealth = 10;
   final MovementController movementController = MovementController();
   String? selectedCharacter;
   MediumType? selectedMedium = MediumType.pencil;
+  HealthBar? healthBar;
+  bool isDead = false;
 
-  /// Set by CharacterDisplay on mount so other components (e.g. WeaponSlots)
-  /// can trigger the scribble effect without direct tree traversal.
-  dynamic characterDisplay; // typed as dynamic to avoid circular imports
+  dynamic characterDisplay;
+  dynamic enemyDisplay;
   @override
   Future<void> onLoad() async {
     router = RouterComponent(

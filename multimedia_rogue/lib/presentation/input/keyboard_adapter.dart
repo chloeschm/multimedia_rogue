@@ -9,13 +9,21 @@ class KeyboardAdapter extends Component
     final dir = Vector2.zero();
 
     if (keysPressed.contains(LogicalKeyboardKey.keyW) ||
-        keysPressed.contains(LogicalKeyboardKey.arrowUp)) dir.y -= 1;
+        keysPressed.contains(LogicalKeyboardKey.arrowUp)) {
+      dir.y -= 1;
+    }
     if (keysPressed.contains(LogicalKeyboardKey.keyS) ||
-        keysPressed.contains(LogicalKeyboardKey.arrowDown)) dir.y += 1;
+        keysPressed.contains(LogicalKeyboardKey.arrowDown)) {
+      dir.y += 1;
+    }
     if (keysPressed.contains(LogicalKeyboardKey.keyA) ||
-        keysPressed.contains(LogicalKeyboardKey.arrowLeft)) dir.x -= 1;
+        keysPressed.contains(LogicalKeyboardKey.arrowLeft)) {
+      dir.x -= 1;
+    }
     if (keysPressed.contains(LogicalKeyboardKey.keyD) ||
-        keysPressed.contains(LogicalKeyboardKey.arrowRight)) dir.x += 1;
+        keysPressed.contains(LogicalKeyboardKey.arrowRight)) {
+      dir.x += 1;
+    }
 
     if (dir.length > 0) dir.normalize();
     game.movementController.direction.setFrom(dir);
