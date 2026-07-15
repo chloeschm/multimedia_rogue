@@ -22,12 +22,19 @@ class GameScreen extends PositionComponent
     add(PencilWorld());
     add(CharacterDisplay());
 
-    add(KeyboardAdapter());
+    final keyboard = KeyboardAdapter();
+    add(keyboard);
+    game.movementController.attach(keyboard);
+
     final isMobile =
         !kIsWeb &&
         (defaultTargetPlatform == TargetPlatform.android ||
             defaultTargetPlatform == TargetPlatform.iOS);
-    if (isMobile) add(JoystickAdapter());
+    if (isMobile) {
+      final joystick = JoystickAdapter();
+      add(joystick);
+      game.movementController.attach(joystick);
+    }
 
     final healthBar = HealthBar();
     Vector2 healthBarSize = Vector2(game.size.x * 0.2, game.size.y * 0.05);

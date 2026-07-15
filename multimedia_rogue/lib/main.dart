@@ -1,4 +1,3 @@
-import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
@@ -23,7 +22,6 @@ void main() {
 class MyGame extends FlameGame
     with
         HasCollisionDetection,
-        CollisionCallbacks,
         HasGameReference<MyGame>,
         HasKeyboardHandlerComponents
         {

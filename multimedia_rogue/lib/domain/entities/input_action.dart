@@ -1,5 +1,5 @@
 enum ActionType {
-  swapMedium, shoot, moveUp, moveDown, moveLeft, moveRight
+  swapMedium, shoot, moveUp, moveDown, moveLeft, moveRight, move,
 }
 
 enum InputPhase {
@@ -10,5 +10,8 @@ class InputAction {
   final InputPhase phase;
   final ActionType actionType;
 
-  InputAction(this.phase, this.actionType);
+  final double x;
+  final double y;
+
+  InputAction(this.phase, this.actionType, {this.x = 0, this.y = 0});
 }

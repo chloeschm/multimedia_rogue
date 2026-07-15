@@ -1,33 +1,48 @@
+import 'dart:async';
+
 import 'package:flame/components.dart';
 import 'package:flutter/services.dart';
-import 'package:multimedia_rogue/main.dart';
+import 'package:multimedia_rogue/domain/entities/input_action.dart';
+import 'package:multimedia_rogue/domain/repositories/input_handler.dart';
 
 class KeyboardAdapter extends Component
-    with KeyboardHandler, HasGameReference<MyGame> {
+    with KeyboardHandler
+    implements InputHandler {
+  final StreamController<InputAction> _controller =
+      StreamController<InputAction>.broadcast();
+
+  final Set<ActionType> _held = {};
+
+  static final Map<ActionType, List<LogicalKeyboardKey>> _bindings = {
+    ActionType.moveUp: [LogicalKeyboardKey.keyW, LogicalKeyboardKey.arrowUp],
+    ActionType.moveDown: [LogicalKeyboardKey.keyS, LogicalKeyboardKey.arrowDown],
+    ActionType.moveLeft: [LogicalKeyboardKey.keyA, LogicalKeyboardKey.arrowLeft],
+    ActionType.moveRight: [LogicalKeyboardKey.keyD, LogicalKeyboardKey.arrowRight],
+    ActionType.shoot: [LogicalKeyboardKey.space],
+  };
+
+  @override
+  Stream<InputAction> get inputStream => _controller.stream;
+
   @override
   bool onKeyEvent(KeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
-    final dir = Vector2.zero();
+    for (final binding in _bindings.entries) {
+      final isDown = binding.value.any(keysPressed.contains);
+      final wasDown = _held.contains(binding.key);
+      if (isDown && !wasDown) {
+        _held.add(binding.key);
+        _controller.add(InputAction(InputPhase.pressed, binding.key));
+      } else if (!isDown && wasDown) {
+        _held.remove(binding.key);
+        _controller.add(InputAction(InputPhase.released, binding.key));
+      }
+    }
+    return false;
+  }
 
-    if (keysPressed.contains(LogicalKeyboardKey.keyW) ||
-        keysPressed.contains(LogicalKeyboardKey.arrowUp)) {
-      dir.y -= 1;
-    }
-    if (keysPressed.contains(LogicalKeyboardKey.keyS) ||
-        keysPressed.contains(LogicalKeyboardKey.arrowDown)) {
-      dir.y += 1;
-    }
-    if (keysPressed.contains(LogicalKeyboardKey.keyA) ||
-        keysPressed.contains(LogicalKeyboardKey.arrowLeft)) {
-      dir.x -= 1;
-    }
-    if (keysPressed.contains(LogicalKeyboardKey.keyD) ||
-        keysPressed.contains(LogicalKeyboardKey.arrowRight)) {
-      dir.x += 1;
-    }
-
-    if (dir.length > 0) dir.normalize();
-    game.movementController.direction.setFrom(dir);
-
-    return false; 
+  @override
+  void onRemove() {
+    _controller.close();
+    super.onRemove();
   }
 }

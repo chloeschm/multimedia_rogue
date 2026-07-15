@@ -1,17 +1,18 @@
-import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flame_audio/flame_audio.dart';
+import 'package:flutter/animation.dart';
 import 'package:multimedia_rogue/data/medium_weapon_assets.dart';
 import 'package:multimedia_rogue/data/weapon_attachment_points.dart';
 import 'package:multimedia_rogue/domain/entities/medium.dart';
 import 'package:multimedia_rogue/main.dart';
+import 'package:multimedia_rogue/presentation/components/combat/player_contact_hitbox.dart';
+import 'package:multimedia_rogue/presentation/components/combat/swing_hitbox.dart';
 import 'package:multimedia_rogue/presentation/components/enemy/enemy_display.dart';
 import 'character_animations.dart';
 import '../../mixins/drop_shadow.dart';
 
-class CharacterDisplay extends PositionComponent
-    with HasGameReference<MyGame>, CollisionCallbacks {
+class CharacterDisplay extends PositionComponent with HasGameReference<MyGame> {
   PositionComponent? _sprite;
   int _generation = 0;
   double speed = 200.0;
@@ -21,7 +22,7 @@ class CharacterDisplay extends PositionComponent
     super.onMount();
     game.characterDisplay = this;
     size = Vector2(game.size.x * 0.10, game.size.y * 0.20);
-    add(CircleHitbox());
+    add(PlayerContactHitbox());
     _refresh();
   }
 
@@ -142,18 +143,6 @@ class CharacterDisplay extends PositionComponent
 
     showScribble();
   }
-
-  @override
-  void onCollisionStart(
-    Set<Vector2> intersectionPoints,
-    PositionComponent other,
-  ) {
-    super.onCollisionStart(intersectionPoints, other);
-    if (other is Enemy) {
-      game.player.takeDamage(1);
-      game.healthBar?.updateHealth(game.player.hp);
-    }
-  }
 }
 
 class _AnimatedCharacter extends SpriteAnimationComponent
@@ -236,9 +225,24 @@ class _WeaponSprite extends SpriteComponent {
   final _AnimatedCharacter host;
   _WeaponSprite({required this.host});
 
+  static const double _raise = 1.2;
+  static const double _sweep = 1.5;
+  static const double _offsetX = 0.08;
+  static const double _offsetY = -0.10;
+
+  bool _wasAttacking = false;
+  bool _swinging = false;
+
   @override
   void update(double dt) {
     super.update(dt);
+
+    final attacking = host.game.movementController.isAttacking;
+    if (attacking && !_wasAttacking && !_swinging) {
+      _startSwing();
+    }
+    _wasAttacking = attacking;
+
     final medium = host.medium;
     if (medium == null) return;
     final offset = getAttachmentPoint(
@@ -247,7 +251,44 @@ class _WeaponSprite extends SpriteComponent {
       host.currentFrameIndex,
     );
     if (offset == null) return;
-    position = Vector2(offset.x * host.size.x, offset.y * host.size.y);
+    position = Vector2(
+      (offset.x + _offsetX) * host.size.x,
+      (offset.y + _offsetY) * host.size.y,
+    );
+  }
+
+  void _startSwing() {
+    _swinging = true;
+    final rest = angle;
+    final swingBox = SwingHitbox(
+      damage: 1,
+      offset: Vector2(size.x * 0.8, size.y * 0.1),
+      radius: 0.9,
+      weaponSize: size,
+    );
+    add(swingBox);
+    add(
+      SequenceEffect(
+        [
+          RotateEffect.to(
+            rest - _raise,
+            EffectController(duration: 0.06, curve: Curves.easeOut),
+          ),
+          RotateEffect.to(
+            rest + _sweep,
+            EffectController(duration: 0.12, curve: Curves.easeIn),
+          ),
+          RotateEffect.to(
+            rest,
+            EffectController(duration: 0.18, curve: Curves.easeOut),
+          ),
+        ],
+        onComplete: () {
+          swingBox.removeFromParent();
+          _swinging = false;
+        },
+      ),
+    );
   }
 }
 

@@ -1,10 +1,12 @@
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flutter/material.dart';
-import 'package:multimedia_rogue/main.dart';
 
-class SmudgeJoystick extends PositionComponent
-    with DragCallbacks, HasGameReference<MyGame> {
+class SmudgeJoystick extends PositionComponent with DragCallbacks {
+  final void Function(Vector2 direction) onMove;
+
+  SmudgeJoystick({required this.onMove});
+
   static const int _maxTrailPoints = 10;
   static const Color _graphite = Color(0xFF3A3A3A);
 
@@ -42,7 +44,7 @@ class SmudgeJoystick extends PositionComponent
     _trail.add(_offset.clone());
     if (_trail.length > _maxTrailPoints) _trail.removeAt(0);
 
-    game.movementController.direction.setFrom(_offset / _maxRadius);
+    onMove(_offset / _maxRadius);
   }
 
   @override
@@ -51,7 +53,7 @@ class SmudgeJoystick extends PositionComponent
     _rawOffset.setZero();
     _offset.setZero();
     _trail.clear();
-    game.movementController.direction.setZero();
+    onMove(Vector2.zero());
   }
 
   @override
@@ -60,7 +62,7 @@ class SmudgeJoystick extends PositionComponent
     _rawOffset.setZero();
     _offset.setZero();
     _trail.clear();
-    game.movementController.direction.setZero();
+    onMove(Vector2.zero());
   }
 
   @override
