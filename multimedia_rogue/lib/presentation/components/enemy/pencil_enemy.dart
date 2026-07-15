@@ -2,7 +2,9 @@ import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:flame/components.dart';
+import 'package:multimedia_rogue/domain/entities/medium.dart';
 import 'package:multimedia_rogue/presentation/components/enemy/enemy_display.dart';
+import 'package:multimedia_rogue/presentation/components/weapons/weapon_pickup.dart';
 
 class PencilEnemyDisplay extends EnemyDisplay {
   static const int spawnCount = 5;
@@ -20,7 +22,7 @@ class PencilEnemyDisplay extends EnemyDisplay {
             random.nextDouble() * game.size.x,
             random.nextDouble() * game.size.y,
           ),
-          size: Vector2(82, 35),
+          size: Vector2(82, 82 * 2077 / 1920),
           isPenDropper: i == penDropperIndex,
         ),
       );
@@ -62,7 +64,14 @@ class PencilEnemy extends Enemy {
     super.die();
   }
 
-  void dropPen() {}
+  void dropPen() {
+    parent?.add(
+      WeaponPickup(
+        position: position + size / 2,
+        mediumType: MediumType.pen,
+      ),
+    );
+  }
 
   @override
   void update(double dt) {

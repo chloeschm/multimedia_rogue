@@ -7,7 +7,7 @@ import 'package:multimedia_rogue/presentation/components/character/character_dis
 import 'package:multimedia_rogue/presentation/components/buttons/pause_button.dart';
 import 'package:multimedia_rogue/presentation/components/buttons/settings_button.dart';
 import 'package:multimedia_rogue/presentation/components/health_bar.dart';
-import 'package:multimedia_rogue/presentation/components/weapon_slots.dart';
+import 'package:multimedia_rogue/presentation/components/weapons/weapon_slots.dart';
 import 'package:multimedia_rogue/presentation/input/joystick_adapter.dart';
 import 'package:multimedia_rogue/presentation/input/keyboard_adapter.dart';
 import 'package:multimedia_rogue/presentation/mixins/drop_shadow.dart';

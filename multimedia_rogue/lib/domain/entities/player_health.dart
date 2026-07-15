@@ -1,5 +1,3 @@
-/// Pure-Dart health model: owns the hp arithmetic, clamp bounds,
-/// and death condition. No Flame imports — unit testable in isolation.
 class PlayerHealth {
   final int maxHp;
   int _hp;

@@ -5,11 +5,6 @@ import 'package:multimedia_rogue/presentation/components/buttons/menu_button.dar
 import 'package:multimedia_rogue/presentation/components/buttons/resume_button.dart';
 
 class PauseOverlay extends PositionComponent with HasGameReference<MyGame> {
-  // Don't pause in onMount — child components (resume/menu buttons) finish
-  // their own onLoad via the game loop, and pauseEngine() would freeze the
-  // loop before they're initialised, leaving them invisible and untappable.
-  // Instead, pause on the very first update() tick, by which time all
-  // children are guaranteed to be fully loaded and mounted.
   bool _enginePaused = false;
 
   @override

@@ -1,5 +1,3 @@
-/// Enemy animation configs. Not yet wired into the game world —
-/// add to an EnemyComponent when ready.
 class EnemyAnimationConfig {
   final String spriteSheet;
   final double frameWidth;
@@ -17,12 +15,11 @@ class EnemyAnimationConfig {
 }
 
 class EnemyAnimations {
-  /// Pencil scribble-blob enemy — two frames (squished / tall), loops like a slime.
   static const pencilEnemy = EnemyAnimationConfig(
     spriteSheet: 'pencilenemysheet.jpg',
-    frameWidth:  3840 / 2,   // 2 frames side by side
-    frameHeight: 2077 / 1,   // single row
+    frameWidth:  3840 / 2,
+    frameHeight: 2077 / 1,
     frameCount:  2,
-    stepTime:    0.35,        // slow bounce
+    stepTime:    0.35,
   );
 }

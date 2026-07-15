@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flame/components.dart';
 import 'package:multimedia_rogue/main.dart';
 import 'package:multimedia_rogue/presentation/components/enemy/pencil_enemy.dart';
+import 'package:multimedia_rogue/presentation/components/exit_door.dart';
 
 class PencilWorld extends PositionComponent with HasGameReference<MyGame> {
   @override
@@ -12,5 +13,10 @@ class PencilWorld extends PositionComponent with HasGameReference<MyGame> {
       paint: Paint()..color = const Color(0xFFFFFFFF),
     ));
     add(PencilEnemyDisplay());
+
+    final door = ExitDoor()
+      ..size = Vector2(game.size.x * 0.025, game.size.y * 0.3)
+      ..position = Vector2(game.size.x * 0.975, game.size.y * 0.35);
+    add(door);
   }
 }

@@ -32,10 +32,6 @@ class StartScreen extends PageScreen with TapCallbacks {
     );
     add(title);
 
-    // On mobile in landscape, paperSize.x is the long dimension (~680px), so
-    // using it as the button base makes the button ~145px tall and crushes the
-    // layout. Use the shorter paper dimension instead so the button stays
-    // proportionate in both orientations. Web uses paperSize.x unchanged.
     final buttonBase = _isMobile ? min(paperSize.x, paperSize.y) : paperSize.x;
     final startButton = StartButton();
     startButton.size = Vector2(buttonBase * 0.31, buttonBase * 0.31 * 0.686);
@@ -53,11 +49,6 @@ class StartScreen extends PageScreen with TapCallbacks {
     draftCounter.scale = Vector2.all(1);
     add(draftCounter);
 
-    // portraitMode only applies when the screen is actually taller than wide
-    // (true portrait). In landscape mobile game.size.y < game.size.x so
-    // portraitMode is false and the original game.size.y * 0.25 formula is
-    // used — which is correct and proportionate in landscape.
-    // Web is always landscape-ish so portraitMode is always false there.
     final isPortrait = !kIsWeb && game.size.y > game.size.x * 1.2;
     final characterSelect = CharacterSelect(portraitMode: isPortrait);
     characterSelect.position = Vector2(

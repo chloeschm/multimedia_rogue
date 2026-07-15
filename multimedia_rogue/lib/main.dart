@@ -5,7 +5,9 @@ import 'package:flutter/material.dart' hide Route;
 import 'package:flutter/services.dart';
 import 'package:multimedia_rogue/domain/entities/medium.dart';
 import 'package:multimedia_rogue/domain/entities/player_health.dart';
+import 'package:multimedia_rogue/presentation/components/exit_door.dart';
 import 'package:multimedia_rogue/presentation/components/health_bar.dart';
+import 'package:multimedia_rogue/presentation/components/weapons/weapon_slots.dart';
 import 'package:multimedia_rogue/presentation/input/movement_controller.dart';
 import 'package:multimedia_rogue/presentation/screens/game_screen.dart';
 import 'package:multimedia_rogue/presentation/screens/pause_overlay.dart';
@@ -23,14 +25,15 @@ class MyGame extends FlameGame
     with
         HasCollisionDetection,
         HasGameReference<MyGame>,
-        HasKeyboardHandlerComponents
-        {
+        HasKeyboardHandlerComponents {
   late final RouterComponent router;
   final PlayerHealth player = PlayerHealth();
   final MovementController movementController = MovementController();
   String? selectedCharacter;
-  MediumType? selectedMedium = MediumType.pencil;
   HealthBar? healthBar;
+  ExitDoor? exitDoor;
+  MediumType? selectedMedium;
+  WeaponSlots? weaponSlots;
 
   dynamic characterDisplay;
   dynamic enemyDisplay;

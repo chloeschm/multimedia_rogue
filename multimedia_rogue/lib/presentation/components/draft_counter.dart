@@ -37,16 +37,16 @@ class DraftCounter extends PositionComponent with HasGameReference<MyGame>, HasD
     const frameWidth = 350.0;
 
     const List<double> xPositions = [
-      20, // 1
-      430, // 2
-      820, // 3
-      1210, // 4
-      1600, // 5
-      1990, // 6
-      2380, // 7
-      2770, // 8
-      3160, // 9
-      3580, // 0
+      20,
+      430,
+      820,
+      1210,
+      1600,
+      1990,
+      2380,
+      2770,
+      3160,
+      3580,
     ];
 
     final int index = digit == 0 ? 9 : digit - 1;
