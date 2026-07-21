@@ -22,10 +22,7 @@ void main() {
 }
 
 class MyGame extends FlameGame
-    with
-        HasCollisionDetection,
-        HasGameReference<MyGame>,
-        HasKeyboardHandlerComponents {
+    with HasCollisionDetection, HasKeyboardHandlerComponents {
   late final RouterComponent router;
   final PlayerHealth player = PlayerHealth();
   final MovementController movementController = MovementController();

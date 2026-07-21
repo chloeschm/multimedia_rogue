@@ -6,6 +6,7 @@ import 'package:multimedia_rogue/data/medium_weapon_assets.dart';
 import 'package:multimedia_rogue/data/weapon_attachment_points.dart';
 import 'package:multimedia_rogue/domain/entities/medium.dart';
 import 'package:multimedia_rogue/main.dart';
+import 'package:multimedia_rogue/presentation/components/combat/ink_shot.dart';
 import 'package:multimedia_rogue/presentation/components/combat/player_contact_hitbox.dart';
 import 'package:multimedia_rogue/presentation/components/combat/swing_hitbox.dart';
 import 'package:multimedia_rogue/presentation/components/enemy/enemy_display.dart';
@@ -16,6 +17,7 @@ class CharacterDisplay extends PositionComponent with HasGameReference<MyGame> {
   PositionComponent? _sprite;
   int _generation = 0;
   double speed = 200.0;
+  bool _placed = false;
 
   @override
   void onMount() {
@@ -61,6 +63,10 @@ class CharacterDisplay extends PositionComponent with HasGameReference<MyGame> {
         }
       }
     }
+  }
+
+  void refreshMedium() {
+    _refresh();
   }
 
   void showScribble() async {
@@ -135,7 +141,10 @@ class CharacterDisplay extends PositionComponent with HasGameReference<MyGame> {
         ..position = Vector2.zero();
     }
 
-    position = pos;
+    if (!_placed) {
+      position = pos;
+      _placed = true;
+    }
 
     if (generation != _generation) return;
     _sprite = newSprite;
@@ -260,22 +269,32 @@ class _WeaponSprite extends SpriteComponent {
   void _startSwing() {
     _swinging = true;
     final rest = angle;
-    final swingBox = SwingHitbox(
-      damage: 1,
-      offset: Vector2(size.x * 0.8, size.y * 0.1),
-      radius: 0.9,
-      weaponSize: size,
-    );
-    add(swingBox);
+    final isRanged = host.medium == MediumType.pen;
+
+    SwingHitbox? swingBox;
+    if (isRanged) {
+      _shootInk();
+    } else {
+      swingBox = SwingHitbox(
+        damage: 1,
+        offset: Vector2(size.x * 0.8, size.y * 0.1),
+        radius: 0.9,
+        weaponSize: size,
+      );
+      add(swingBox);
+    }
+
+    final raise = isRanged ? _raise * 0.4 : _raise;
+    final sweep = isRanged ? _sweep * 0.3 : _sweep;
     add(
       SequenceEffect(
         [
           RotateEffect.to(
-            rest - _raise,
+            rest - raise,
             EffectController(duration: 0.06, curve: Curves.easeOut),
           ),
           RotateEffect.to(
-            rest + _sweep,
+            rest + sweep,
             EffectController(duration: 0.12, curve: Curves.easeIn),
           ),
           RotateEffect.to(
@@ -284,11 +303,20 @@ class _WeaponSprite extends SpriteComponent {
           ),
         ],
         onComplete: () {
-          swingBox.removeFromParent();
+          swingBox?.removeFromParent();
           _swinging = false;
         },
       ),
     );
+  }
+
+  void _shootInk() {
+    final facing = host.scale.x >= 0 ? 1.0 : -1.0;
+    final shot = InkShot(
+      direction: Vector2(facing, 0),
+      position: absolutePosition,
+    );
+    (host.game.characterDisplay as PositionComponent?)?.parent?.add(shot);
   }
 }
 

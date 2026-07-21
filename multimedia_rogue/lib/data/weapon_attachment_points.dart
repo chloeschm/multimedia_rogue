@@ -43,8 +43,8 @@ Vector2? getAttachmentPoint(
   int frameIndex,
 ) {
   final stateMap = _rawAttachmentPoints[medium];
-  if (stateMap == null) return null;
-  final frames = stateMap[state];
+  final fallbackMap = _rawAttachmentPoints[MediumType.pencil];
+  final frames = stateMap?[state] ?? fallbackMap?[state];
   if (frames == null || frames.isEmpty) return null;
   final pair = frames[frameIndex.clamp(0, frames.length - 1)];
   return Vector2(pair[0], pair[1]);

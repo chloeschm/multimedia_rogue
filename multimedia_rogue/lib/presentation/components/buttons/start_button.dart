@@ -11,7 +11,7 @@ class StartButton extends SpriteComponent
 
   @override
   Future<void> onLoad() async {
-    _pressedSprite = await Sprite.load('start_pressed.jpg');
+    _pressedSprite = await Sprite.load('start_pressed.png');
     _normalSprite = await Sprite.load('start_button.png');
 
     sprite = _normalSprite;

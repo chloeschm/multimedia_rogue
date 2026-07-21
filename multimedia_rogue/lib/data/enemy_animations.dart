@@ -16,7 +16,7 @@ class EnemyAnimationConfig {
 
 class EnemyAnimations {
   static const pencilEnemy = EnemyAnimationConfig(
-    spriteSheet: 'pencilenemysheet.jpg',
+    spriteSheet: 'pencilenemysheet.png',
     frameWidth:  3840 / 2,
     frameHeight: 2077 / 1,
     frameCount:  2,

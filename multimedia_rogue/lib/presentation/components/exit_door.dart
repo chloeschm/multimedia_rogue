@@ -1,16 +1,24 @@
 import 'dart:math';
 
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:multimedia_rogue/main.dart';
+import 'package:multimedia_rogue/presentation/components/character/character_display.dart';
 
-class ExitDoor extends PositionComponent with HasGameReference<MyGame> {
+class ExitDoor extends PositionComponent
+    with HasGameReference<MyGame>, CollisionCallbacks {
   static const Color _graphite = Color(0xFF3A3A3A);
+
+  final VoidCallback? onEnter;
+
+  ExitDoor({this.onEnter});
 
   bool isOpen = false;
 
   double _time = 0.0;
   double _glowT = 0.0;
+  bool _entered = false;
 
   @override
   void onMount() {
@@ -25,7 +33,21 @@ class ExitDoor extends PositionComponent with HasGameReference<MyGame> {
   }
 
   void open() {
+    if (isOpen) return;
     isOpen = true;
+    add(RectangleHitbox()..collisionType = CollisionType.passive);
+  }
+
+  @override
+  void onCollisionStart(
+    Set<Vector2> intersectionPoints,
+    PositionComponent other,
+  ) {
+    super.onCollisionStart(intersectionPoints, other);
+    if (other is CharacterDisplay && isOpen && !_entered) {
+      _entered = true;
+      onEnter?.call();
+    }
   }
 
   @override

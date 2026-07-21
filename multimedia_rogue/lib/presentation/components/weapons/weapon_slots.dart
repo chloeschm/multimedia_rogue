@@ -38,12 +38,12 @@ class WeaponSlots extends PositionComponent with HasGameReference<MyGame> {
     size = Vector2((slotWidth * 6) + (padding * 5), slotHeight);
 
     final slotFiles = [
-      'pencil.jpg',
-      'pen.jpg',
-      'marker.jpg',
-      'brush.jpg',
-      'watercolor.jpg',
-      'pastel.jpg',
+      'pencil.png',
+      'pen.png',
+      'marker.png',
+      'brush.png',
+      'watercolor.png',
+      'pastel.png',
     ];
 
     for (int i = 0; i < slotFiles.length; i++) {
@@ -71,7 +71,7 @@ class WeaponSlots extends PositionComponent with HasGameReference<MyGame> {
     _slots[_selectedIndex].select();
     game.selectedMedium = _slotMediums[index];
 
-    (game.characterDisplay as CharacterDisplay?)?.showScribble();
+    (game.characterDisplay as CharacterDisplay?)?.refreshMedium();
   }
 
   void unlockSlot(int index) {
@@ -80,6 +80,10 @@ class WeaponSlots extends PositionComponent with HasGameReference<MyGame> {
 
   void unlockMedium(MediumType medium) {
     unlockSlot(_slotMediums.indexOf(medium));
+  }
+
+  void selectMedium(MediumType medium) {
+    _selectSlot(_slotMediums.indexOf(medium));
   }
 }
 

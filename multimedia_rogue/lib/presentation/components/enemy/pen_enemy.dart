@@ -6,49 +6,49 @@ import 'package:multimedia_rogue/domain/entities/medium.dart';
 import 'package:multimedia_rogue/presentation/components/enemy/enemy_display.dart';
 import 'package:multimedia_rogue/presentation/components/weapons/weapon_pickup.dart';
 
-class PencilEnemyDisplay extends EnemyDisplay {
-  static const int spawnCount = 5;
+class PenEnemyDisplay extends EnemyDisplay {
+  static const int spawnCount = 10;
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
     final random = Random();
-    final penDropperIndex = random.nextInt(spawnCount);
+    final markerDropperIndex = random.nextInt(spawnCount);
 
     for (int i = 0; i < spawnCount; i++) {
       add(
-        PencilEnemy(
+        PenEnemy(
           position: Vector2(
             random.nextDouble() * game.size.x,
             random.nextDouble() * game.size.y,
           ),
-          size: Vector2(82, 82 * 2077 / 1920),
-          isPenDropper: i == penDropperIndex,
+          size: Vector2(58, 58 * 395 / 316),
+          isMarkerDropper: i == markerDropperIndex,
         ),
       );
     }
   }
 }
 
-class PencilEnemy extends Enemy {
-  static final Vector2 _frameSize = Vector2(1920, 2077);
+class PenEnemy extends Enemy {
+  static final Vector2 _frameSize = Vector2(316, 395);
   static const double _runAnimationSpeed = 0.6;
 
-  final bool isPenDropper;
+  final bool isMarkerDropper;
 
   late ui.Image _spriteSheet;
   double _runAnimationTimer = 0.0;
 
-  PencilEnemy({
+  PenEnemy({
     required super.position,
     required super.size,
-    this.isPenDropper = false,
+    this.isMarkerDropper = false,
   });
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    _spriteSheet = await game.images.load('pencilenemysheet.png');
+    _spriteSheet = await game.images.load('penenemysheet.png');
     sprite = Sprite(
       _spriteSheet,
       srcPosition: Vector2.zero(),
@@ -58,17 +58,17 @@ class PencilEnemy extends Enemy {
 
   @override
   void die() {
-    if (isPenDropper) {
-      dropPen();
+    if (isMarkerDropper) {
+      dropMarker();
     }
     super.die();
   }
 
-  void dropPen() {
+  void dropMarker() {
     parent?.add(
       WeaponPickup(
         position: position + size / 2,
-        mediumType: MediumType.pen,
+        mediumType: MediumType.marker,
       ),
     );
   }

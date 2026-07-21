@@ -55,6 +55,7 @@ class WeaponPickup extends SpriteComponent
     super.onCollisionStart(intersectionPoints, other);
     if (other is CharacterDisplay) {
       game.weaponSlots?.unlockMedium(mediumType);
+      game.weaponSlots?.selectMedium(mediumType);
       game.exitDoor?.open();
       removeFromParent();
     }

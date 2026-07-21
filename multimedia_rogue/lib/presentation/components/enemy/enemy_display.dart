@@ -1,7 +1,6 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:multimedia_rogue/main.dart';
-import 'package:multimedia_rogue/presentation/components/character/character_display.dart';
 
 abstract class EnemyDisplay extends PositionComponent
     with HasGameReference<MyGame> {
@@ -12,8 +11,7 @@ abstract class EnemyDisplay extends PositionComponent
   }
 }
 
-abstract class Enemy extends SpriteComponent
-    with HasGameReference<MyGame>, CollisionCallbacks {
+abstract class Enemy extends SpriteComponent with HasGameReference<MyGame> {
   final double speed;
 
   Enemy({
@@ -40,7 +38,7 @@ abstract class Enemy extends SpriteComponent
     super.update(dt);
 
     final playerPos = (game.characterDisplay as PositionComponent?)?.position;
-    if (playerPos != null) {
+    if (playerPos != null && _isNearestToPlayer(playerPos)) {
       final toPlayer = playerPos - position;
       if (toPlayer.length2 > 0.01) {
         position += toPlayer.normalized() * speed * dt;
@@ -58,13 +56,20 @@ abstract class Enemy extends SpriteComponent
     }
   }
 
-  void die() {
-    removeFromParent();
+  bool _isNearestToPlayer(Vector2 playerPos) {
+    final siblings = parent?.children.whereType<Enemy>();
+    if (siblings == null) return true;
+    final myDistance = position.distanceToSquared(playerPos);
+    for (final enemy in siblings) {
+      if (enemy == this) continue;
+      if (enemy.position.distanceToSquared(playerPos) < myDistance) {
+        return false;
+      }
+    }
+    return true;
   }
 
-  @override
-  void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
-    super.onCollision(intersectionPoints, other);
-    if (other is CharacterDisplay) {}
+  void die() {
+    removeFromParent();
   }
 }
