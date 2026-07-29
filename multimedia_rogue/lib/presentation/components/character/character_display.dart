@@ -278,7 +278,7 @@ class _WeaponSprite extends SpriteComponent {
       swingBox = SwingHitbox(
         damage: 1,
         offset: Vector2(size.x * 0.8, size.y * 0.1),
-        radius: 0.9,
+        radius: host.medium == MediumType.pencil ? 1.4 : 0.9,
         weaponSize: size,
       );
       add(swingBox);

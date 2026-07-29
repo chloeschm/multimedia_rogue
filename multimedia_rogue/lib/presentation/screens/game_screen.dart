@@ -19,6 +19,7 @@ class GameScreen extends PositionComponent
   Future<void> onLoad() async {
     await super.onLoad();
     size = game.size;
+    game.player.reset();
     add(PencilWorld());
     add(CharacterDisplay());
 

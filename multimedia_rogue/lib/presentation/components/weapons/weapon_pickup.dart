@@ -7,7 +7,7 @@ import 'package:multimedia_rogue/presentation/components/character/character_dis
 
 class WeaponPickup extends SpriteComponent
     with HasGameReference<MyGame>, CollisionCallbacks {
-  static const double _pickupDelay = 5.0;
+  static const double _pickupDelay = 2.5;
 
   final MediumType mediumType;
 

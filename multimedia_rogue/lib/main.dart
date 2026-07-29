@@ -10,6 +10,7 @@ import 'package:multimedia_rogue/presentation/components/health_bar.dart';
 import 'package:multimedia_rogue/presentation/components/weapons/weapon_slots.dart';
 import 'package:multimedia_rogue/presentation/input/movement_controller.dart';
 import 'package:multimedia_rogue/presentation/screens/game_screen.dart';
+import 'package:multimedia_rogue/presentation/screens/game_over_screen.dart';
 import 'package:multimedia_rogue/presentation/screens/pause_overlay.dart';
 import 'package:multimedia_rogue/presentation/screens/start_screen.dart';
 import 'package:multimedia_rogue/presentation/screens/settings_screen.dart';
@@ -25,6 +26,8 @@ class MyGame extends FlameGame
     with HasCollisionDetection, HasKeyboardHandlerComponents {
   late final RouterComponent router;
   final PlayerHealth player = PlayerHealth();
+  final Set<MediumType> unlockedMediums = {MediumType.pencil};
+  int draftCount = 0;
   final MovementController movementController = MovementController();
   String? selectedCharacter;
   HealthBar? healthBar;
@@ -40,8 +43,9 @@ class MyGame extends FlameGame
       routes: {
         'start': Route(StartScreen.new),
         'settings': Route(SettingsScreen.new),
-        'game': Route(GameScreen.new),
+        'game': Route(GameScreen.new, maintainState: false),
         'pause': Route(PauseOverlay.new, transparent: true),
+        'gameover': Route(GameOverScreen.new, maintainState: false),
       },
       initialRoute: 'start',
     );

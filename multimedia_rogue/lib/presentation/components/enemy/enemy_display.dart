@@ -13,11 +13,13 @@ abstract class EnemyDisplay extends PositionComponent
 
 abstract class Enemy extends SpriteComponent with HasGameReference<MyGame> {
   final double speed;
+  final int chasePack;
 
   Enemy({
     required Vector2 position,
     required Vector2 size,
     this.speed = 50.0,
+    this.chasePack = 1,
   }) : super(position: position, size: size);
 
   @override
@@ -60,10 +62,12 @@ abstract class Enemy extends SpriteComponent with HasGameReference<MyGame> {
     final siblings = parent?.children.whereType<Enemy>();
     if (siblings == null) return true;
     final myDistance = position.distanceToSquared(playerPos);
+    var closer = 0;
     for (final enemy in siblings) {
       if (enemy == this) continue;
       if (enemy.position.distanceToSquared(playerPos) < myDistance) {
-        return false;
+        closer++;
+        if (closer >= chasePack) return false;
       }
     }
     return true;

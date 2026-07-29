@@ -15,7 +15,7 @@ class PenWorld extends PositionComponent with HasGameReference<MyGame> {
     add(_DraftingPaperBackground()..size = size);
     add(PenEnemyDisplay());
 
-    final door = ExitDoor()
+    final door = PenExitDoor()
       ..size = Vector2(game.size.x * 0.025, game.size.y * 0.3)
       ..position = Vector2(game.size.x * 0.975, game.size.y * 0.35);
     add(door);
@@ -106,11 +106,11 @@ class _DraftingPaperBackground extends PositionComponent {
   }
 
   void _renderHatchVignette(Canvas canvas) {
-    final band = size.x * 0.10;
+    final band = size.x * 0.12;
     final hatchPaint = Paint()
       ..color = _ink.withOpacity(0.05)
-      ..strokeWidth = 0.9;
-    const step = 14.0;
+      ..strokeWidth = 1.7;
+    const step = 26.0;
 
     for (double d = -size.y; d < size.x; d += step) {
       final depth = _edgeDepth(d, band);

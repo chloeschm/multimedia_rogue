@@ -43,7 +43,7 @@ class PenEnemy extends Enemy {
     required super.position,
     required super.size,
     this.isMarkerDropper = false,
-  });
+  }) : super(speed: 85.0, chasePack: 3);
 
   @override
   Future<void> onLoad() async {

@@ -57,7 +57,10 @@ class WeaponSlots extends PositionComponent with HasGameReference<MyGame> {
       add(slot);
     }
 
-    _slots[0].unlock();
+    for (final medium in game.unlockedMediums) {
+      final index = _slotMediums.indexOf(medium);
+      if (index >= 0) _slots[index].unlock();
+    }
     _slots[0].select();
     game.selectedMedium = _slotMediums[0];
   }
@@ -75,7 +78,10 @@ class WeaponSlots extends PositionComponent with HasGameReference<MyGame> {
   }
 
   void unlockSlot(int index) {
-    if (index >= 0 && index < _slots.length) _slots[index].unlock();
+    if (index >= 0 && index < _slots.length) {
+      _slots[index].unlock();
+      game.unlockedMediums.add(_slotMediums[index]);
+    }
   }
 
   void unlockMedium(MediumType medium) {

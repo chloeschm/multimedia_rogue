@@ -14,7 +14,15 @@ class DraftCounter extends PositionComponent with HasGameReference<MyGame>, HasD
   int currentDraft = 0;
 
   @override
+  void onMount() {
+    super.onMount();
+    currentDraft = game.draftCount;
+    _digitSprite.sprite = _getSpriteForDigit(currentDraft % 10);
+  }
+
+  @override
   Future<void> onLoad() async {
+    currentDraft = game.draftCount;
     final sheetImage = await Flame.images.load('draft_counter_sheet.png');
     _spriteSheetImage = sheetImage;
     _labelSprite = SpriteComponent(
@@ -23,7 +31,7 @@ class DraftCounter extends PositionComponent with HasGameReference<MyGame>, HasD
     );
 
     _digitSprite = SpriteComponent(
-      sprite: _getSpriteForDigit(currentDraft),
+      sprite: _getSpriteForDigit(currentDraft % 10),
       size: Vector2(game.size.x * 0.05, game.size.y * 0.06),
       position: Vector2(_labelSprite.size.x + 5, 0),
     );
