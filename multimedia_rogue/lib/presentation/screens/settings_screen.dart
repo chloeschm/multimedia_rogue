@@ -25,17 +25,17 @@ class SettingsScreen extends PageScreen with TapCallbacks {
     add(backButton);
 
     final volumeLabel = VolumeLabel();
-    volumeLabel.size = Vector2(paperSize.x * 0.35, paperSize.y * 0.10);
+    volumeLabel.size = Vector2(paperSize.x * 0.30, paperSize.y * 0.12);
     volumeLabel.position = Vector2(
       paperPosition.x + (paperSize.x - volumeLabel.size.x) / 2,
-      paperPosition.y + paperSize.y * 0.30,
+      paperPosition.y + paperSize.y * 0.26,
     );
     add(volumeLabel);
 
-    final sliderWidth = paperSize.x * 0.65;
-    final sliderHeight = paperSize.y * 0.07;
+    final sliderWidth = paperSize.x * 0.55;
+    final sliderHeight = paperSize.y * 0.08;
     final sliderX = paperPosition.x + (paperSize.x - sliderWidth) / 2;
-    final sliderY = paperPosition.y + paperSize.y * 0.48;
+    final sliderY = paperPosition.y + paperSize.y * 0.52;
 
     final sliderBar = SliderBar();
     sliderBar.size = Vector2(sliderWidth, sliderHeight);

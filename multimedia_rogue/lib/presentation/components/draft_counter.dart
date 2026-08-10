@@ -42,26 +42,37 @@ class DraftCounter extends PositionComponent with HasGameReference<MyGame>, HasD
 
   Sprite _getSpriteForDigit(int digit) {
     const frameHeight = 667.0;
-    const frameWidth = 350.0;
 
-    const List<double> xPositions = [
-      20,
-      430,
-      820,
-      1210,
-      1600,
-      1990,
-      2380,
-      2770,
-      3160,
-      3580,
+    const List<double> srcX = [
+      0,
+      228,
+      650,
+      1089,
+      1516,
+      1958,
+      2359,
+      2766,
+      3214,
+      3608,
+    ];
+    const List<double> srcWidth = [
+      228,
+      398,
+      400,
+      400,
+      400,
+      393,
+      390,
+      400,
+      389,
+      400,
     ];
 
     final int index = digit == 0 ? 9 : digit - 1;
     return Sprite(
       _spriteSheetImage,
-      srcPosition: Vector2(xPositions[index], 0),
-      srcSize: Vector2(frameWidth, frameHeight),
+      srcPosition: Vector2(srcX[index], 0),
+      srcSize: Vector2(srcWidth[index], frameHeight),
     );
   }
 }

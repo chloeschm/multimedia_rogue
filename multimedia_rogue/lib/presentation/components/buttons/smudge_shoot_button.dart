@@ -75,16 +75,6 @@ class SmudgeShootButton extends PositionComponent
     final center = Offset(cx, cy);
     final radius = size.x * 0.38;
 
-    canvas.drawCircle(
-      center,
-      radius,
-      Paint()
-        ..color = _graphite.withOpacity(0.12 + 0.10 * _pressT)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.2 * _style.strokeScale,
-    );
-
- 
     final coreW = radius * 1.15 * (1.0 - 0.08 * _pressT) * _style.knobScale;
     final coreH = radius * 0.78 * (1.0 - 0.08 * _pressT) * _style.knobScale;
     for (int layer = 0; layer < 4; layer++) {

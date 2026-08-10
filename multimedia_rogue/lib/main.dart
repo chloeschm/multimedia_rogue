@@ -19,6 +19,10 @@ import 'package:multimedia_rogue/presentation/screens/settings_screen.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
+  ]);
   final game = MyGame();
   runApp(GameWidget(game: game));
 }

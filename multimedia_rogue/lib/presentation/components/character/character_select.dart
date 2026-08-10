@@ -6,38 +6,34 @@ import 'package:multimedia_rogue/main.dart';
 class CharacterSelect extends PositionComponent with HasGameReference<MyGame> {
   final List<_CharacterButton> _buttons = [];
 
-
-  final bool portraitMode;
-
-  CharacterSelect({this.portraitMode = false});
-
   @override
   Future<void> onLoad() async {
-    final characterWidth = game.size.x * 0.15;
-    final characterHeight = portraitMode
-        ? characterWidth * 1.3   
-        : game.size.y * 0.25;   
-    final padding = game.size.x * 0.05;
-    final totalWidth = (characterWidth * 3) + (padding * 2);
+    final characterHeight = game.size.y * 0.28;
+    final padding = game.size.x * 0.03;
 
-    size = Vector2(totalWidth, characterHeight);
-
-    final configs = [
-      ('girl_character.png', Vector2(0, 0)),
-      ('boy_character.png', Vector2(characterWidth + padding, 0)),
-      ('andro_character.png', Vector2((characterWidth + padding) * 2, 0)),
+    const files = [
+      'girl_character.png',
+      'boy_character.png',
+      'andro_character.png',
     ];
 
-    for (final (file, pos) in configs) {
+    var x = 0.0;
+    for (final file in files) {
+      final sprite = await Sprite.load(file);
+      final characterWidth = characterHeight * sprite.srcSize.x / sprite.srcSize.y;
       final button = _CharacterButton(
         spriteFile: file,
         onSelected: _onCharacterSelected,
       )
+        ..sprite = sprite
         ..size = Vector2(characterWidth, characterHeight)
-        ..position = pos;
+        ..position = Vector2(x, 0);
       _buttons.add(button);
       add(button);
+      x += characterWidth + padding;
     }
+
+    size = Vector2(x - padding, characterHeight);
   }
 
   void _onCharacterSelected(_CharacterButton selected) {
@@ -56,7 +52,7 @@ class _CharacterButton extends SpriteComponent with TapCallbacks {
 
   @override
   Future<void> onLoad() async {
-    sprite = await Sprite.load(spriteFile);
+    sprite ??= await Sprite.load(spriteFile);
   }
 
   void setSelected(bool selected) {

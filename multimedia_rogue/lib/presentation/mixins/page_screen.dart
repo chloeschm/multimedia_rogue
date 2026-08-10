@@ -13,7 +13,7 @@ class PageScreen extends PositionComponent with HasGameReference<MyGame> {
       ..size = size;
     add(bg);
 
-    paperSize = size * 0.8;
+    paperSize = Vector2(size.x * 0.86, size.y * 0.84);
     paperPosition = Vector2(
       (size.x - paperSize.x) / 2,
       (size.y - paperSize.y) / 2,

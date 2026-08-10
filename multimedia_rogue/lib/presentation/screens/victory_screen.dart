@@ -32,9 +32,9 @@ class VictoryScreen extends PositionComponent with HasGameReference<MyGame> {
 
     await _addTitle();
 
-    final frameWidth = game.size.x * 0.42;
-    final frameHeight = frameWidth * 285 / 433;
-    final frameCenter = Vector2(game.size.x / 2, game.size.y * 0.52);
+    final frameHeight = game.size.y * 0.46;
+    final frameWidth = frameHeight * 433 / 285;
+    final frameCenter = Vector2(game.size.x / 2, game.size.y * 0.55);
 
     add(
       SpriteComponent(
@@ -62,7 +62,7 @@ class VictoryScreen extends PositionComponent with HasGameReference<MyGame> {
 
     final unlocked =
         _displayOrder.where(game.unlockedMediums.contains).toList();
-    final iconSize = game.size.x * 0.045;
+    final iconSize = game.size.y * 0.06;
     final spacing = iconSize * 1.3;
     final startX = frameCenter.x - spacing * (unlocked.length - 1) / 2;
     for (int i = 0; i < unlocked.length; i++) {
@@ -81,11 +81,13 @@ class VictoryScreen extends PositionComponent with HasGameReference<MyGame> {
       );
     }
 
+    final menuHeight = game.size.y * 0.11;
+    final menuWidth = menuHeight * 2.380;
     final menuButton = MenuButton()
-      ..size = Vector2(game.size.x * 0.25, game.size.y * 0.09)
+      ..size = Vector2(menuWidth, menuHeight)
       ..position = Vector2(
-        game.size.x / 2 - game.size.x * 0.125,
-        game.size.y * 0.80,
+        game.size.x / 2 - menuWidth / 2,
+        game.size.y * 0.82,
       );
     add(menuButton);
   }
@@ -100,14 +102,14 @@ class VictoryScreen extends PositionComponent with HasGameReference<MyGame> {
     }
 
     if (title != null) {
-      final w = game.size.x * 0.42;
-      final h = w * title.srcSize.y / title.srcSize.x;
+      final h = game.size.y * 0.20;
+      final w = h * title.srcSize.x / title.srcSize.y;
       add(
         SpriteComponent(
           sprite: title,
           size: Vector2(w, h),
           anchor: Anchor.center,
-          position: Vector2(game.size.x / 2, game.size.y * 0.15),
+          position: Vector2(game.size.x / 2, game.size.y * 0.16),
         ),
       );
     } else {
@@ -115,11 +117,11 @@ class VictoryScreen extends PositionComponent with HasGameReference<MyGame> {
         TextComponent(
           text: 'MASTERPIECE',
           anchor: Anchor.center,
-          position: Vector2(game.size.x / 2, game.size.y * 0.15),
+          position: Vector2(game.size.x / 2, game.size.y * 0.16),
           textRenderer: TextPaint(
             style: TextStyle(
               color: Colors.white,
-              fontSize: game.size.y * 0.07,
+              fontSize: game.size.y * 0.09,
               fontWeight: FontWeight.bold,
               letterSpacing: 4,
             ),
