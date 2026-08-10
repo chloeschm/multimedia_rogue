@@ -1,5 +1,6 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:multimedia_rogue/data/medium_weapon_assets.dart';
 import 'package:multimedia_rogue/domain/entities/medium.dart';
 import 'package:multimedia_rogue/main.dart';
@@ -54,6 +55,7 @@ class WeaponPickup extends SpriteComponent
   ) {
     super.onCollisionStart(intersectionPoints, other);
     if (other is CharacterDisplay) {
+      FlameAudio.play('plip.wav');
       game.weaponSlots?.unlockMedium(mediumType);
       game.weaponSlots?.selectMedium(mediumType);
       game.exitDoor?.open();

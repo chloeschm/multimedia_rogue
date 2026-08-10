@@ -41,7 +41,7 @@ class PauseOverlay extends PositionComponent with HasGameReference<MyGame> {
     );
     add(resumeButton);
 
-    final menuButton = MenuButton();
+    final menuButton = MenuButton(countsDraft: true);
     menuButton.size = Vector2(game.size.x * 0.25, game.size.y * 0.09);
     menuButton.position = Vector2(
       game.size.x - menuButton.size.x - game.size.x * 0.03,

@@ -1,4 +1,11 @@
-enum MediumType { pencil, pen, marker, brush, watercolor, pastel }
+enum MediumType {
+  pencil,
+  pen,
+  marker,
+  watercolor,
+  // brush,
+  // pastel,
+}
 
 class Medium {
   final MediumType type;

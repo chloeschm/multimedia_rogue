@@ -1,6 +1,5 @@
+import 'package:multimedia_rogue/domain/entities/animation_state.dart';
 import 'package:multimedia_rogue/domain/entities/medium.dart';
-
-enum AnimationState { idle, run, attack, runAttack }
 
 class CharacterAnimationRow {
   final int rowIndex;
@@ -105,18 +104,96 @@ class CharacterAnimations {
     },
   );
 
+  static const _markerGirl = CharacterAnimationConfig(
+    spriteSheet: 'markergirlsheet.png',
+    frameWidth:  2916 / 6,
+    frameHeight: 2160 / 4,
+    animations: {
+      AnimationState.attack:    CharacterAnimationRow(rowIndex: 0, frameCount: 6, stepTime: 0.10),
+      AnimationState.runAttack: CharacterAnimationRow(rowIndex: 1, frameCount: 6, stepTime: 0.10),
+      AnimationState.idle:      CharacterAnimationRow(rowIndex: 2, frameCount: 4, stepTime: 0.20),
+      AnimationState.run:       CharacterAnimationRow(rowIndex: 3, frameCount: 6, stepTime: 0.12),
+    },
+  );
+
+  static const _markerBoy = CharacterAnimationConfig(
+    spriteSheet: 'markerboysheet.png',
+    frameWidth:  2912 / 6,
+    frameHeight: 2160 / 4,
+    animations: {
+      AnimationState.attack:    CharacterAnimationRow(rowIndex: 0, frameCount: 6, stepTime: 0.10),
+      AnimationState.runAttack: CharacterAnimationRow(rowIndex: 1, frameCount: 6, stepTime: 0.10),
+      AnimationState.idle:      CharacterAnimationRow(rowIndex: 2, frameCount: 4, stepTime: 0.20, yOffset: 20),
+      AnimationState.run:       CharacterAnimationRow(rowIndex: 3, frameCount: 6, stepTime: 0.12, yOffset: 40, frameHeightOverride: 500),
+    },
+  );
+
+  static const _markerAndro = CharacterAnimationConfig(
+    spriteSheet: 'markerandrosheet.png',
+    frameWidth:  2970 / 6,
+    frameHeight: 2160 / 4,
+    animations: {
+      AnimationState.attack:    CharacterAnimationRow(rowIndex: 0, frameCount: 6, stepTime: 0.10),
+      AnimationState.runAttack: CharacterAnimationRow(rowIndex: 1, frameCount: 6, stepTime: 0.10),
+      AnimationState.idle:      CharacterAnimationRow(rowIndex: 2, frameCount: 4, stepTime: 0.20, yOffset: 20),
+      AnimationState.run:       CharacterAnimationRow(rowIndex: 3, frameCount: 6, stepTime: 0.12, yOffset: 40, frameHeightOverride: 500),
+    },
+  );
+
+  static const _watercolorGirl = CharacterAnimationConfig(
+    spriteSheet: 'watercolorgirlsheet.png',
+    frameWidth:  2925 / 6,
+    frameHeight: 2160 / 4,
+    animations: {
+      AnimationState.attack:    CharacterAnimationRow(rowIndex: 0, frameCount: 6, stepTime: 0.10),
+      AnimationState.runAttack: CharacterAnimationRow(rowIndex: 1, frameCount: 6, stepTime: 0.10),
+      AnimationState.idle:      CharacterAnimationRow(rowIndex: 2, frameCount: 4, stepTime: 0.20),
+      AnimationState.run:       CharacterAnimationRow(rowIndex: 3, frameCount: 6, stepTime: 0.12),
+    },
+  );
+
+  static const _watercolorBoy = CharacterAnimationConfig(
+    spriteSheet: 'watercolorboysheet.png',
+    frameWidth:  2950 / 6,
+    frameHeight: 2160 / 4,
+    animations: {
+      AnimationState.attack:    CharacterAnimationRow(rowIndex: 0, frameCount: 6, stepTime: 0.10),
+      AnimationState.runAttack: CharacterAnimationRow(rowIndex: 1, frameCount: 6, stepTime: 0.10),
+      AnimationState.idle:      CharacterAnimationRow(rowIndex: 2, frameCount: 4, stepTime: 0.20, yOffset: 20),
+      AnimationState.run:       CharacterAnimationRow(rowIndex: 3, frameCount: 6, stepTime: 0.12, yOffset: 40, frameHeightOverride: 500),
+    },
+  );
+
+  static const _watercolorAndro = CharacterAnimationConfig(
+    spriteSheet: 'watercolorandrosheet.png',
+    frameWidth:  2976 / 6,
+    frameHeight: 2160 / 4,
+    animations: {
+      AnimationState.attack:    CharacterAnimationRow(rowIndex: 0, frameCount: 6, stepTime: 0.10),
+      AnimationState.runAttack: CharacterAnimationRow(rowIndex: 1, frameCount: 6, stepTime: 0.10),
+      AnimationState.idle:      CharacterAnimationRow(rowIndex: 2, frameCount: 4, stepTime: 0.20, yOffset: 20),
+      AnimationState.run:       CharacterAnimationRow(rowIndex: 3, frameCount: 6, stepTime: 0.12, yOffset: 40, frameHeightOverride: 500),
+    },
+  );
+
   static const Map<String, Map<MediumType, CharacterAnimationConfig>> byCharacterAndMedium = {
     'girl_character.png': {
       MediumType.pencil: _pencilGirl,
       MediumType.pen: _penGirl,
+      MediumType.marker: _markerGirl,
+      MediumType.watercolor: _watercolorGirl,
     },
     'boy_character.png': {
       MediumType.pencil: _pencilBoy,
       MediumType.pen: _penBoy,
+      MediumType.marker: _markerBoy,
+      MediumType.watercolor: _watercolorBoy,
     },
     'andro_character.png': {
       MediumType.pencil: _pencilAndro,
       MediumType.pen: _penAndro,
+      MediumType.marker: _markerAndro,
+      MediumType.watercolor: _watercolorAndro,
     },
   };
 }

@@ -6,7 +6,7 @@ import 'package:multimedia_rogue/domain/entities/medium.dart';
 import 'package:multimedia_rogue/main.dart';
 import 'package:multimedia_rogue/presentation/components/buttons/menu_button.dart';
 
-class GameOverScreen extends PositionComponent with HasGameReference<MyGame> {
+class VictoryScreen extends PositionComponent with HasGameReference<MyGame> {
   static const List<MediumType> _displayOrder = [
     MediumType.pencil,
     MediumType.pen,
@@ -18,7 +18,7 @@ class GameOverScreen extends PositionComponent with HasGameReference<MyGame> {
   Future<void> onLoad() async {
     size = game.size;
     game.draftCount++;
-    FlameAudio.play('womp.m4a');
+    FlameAudio.play('hooray.wav');
 
     add(
       SpriteComponent(sprite: await Sprite.load('background.png'), size: size),
@@ -26,7 +26,7 @@ class GameOverScreen extends PositionComponent with HasGameReference<MyGame> {
     add(
       RectangleComponent(
         size: size,
-        paint: Paint()..color = const Color(0x661B2430),
+        paint: Paint()..color = const Color(0x334A7BA6),
       ),
     );
 
@@ -47,13 +47,13 @@ class GameOverScreen extends PositionComponent with HasGameReference<MyGame> {
 
     add(
       TextComponent(
-        text: 'draft #${game.draftCount} scrapped',
+        text: 'draft #${game.draftCount}',
         anchor: Anchor.center,
         position: Vector2(frameCenter.x, frameCenter.y - frameHeight * 0.10),
         textRenderer: TextPaint(
           style: TextStyle(
             color: const Color(0xFF3A3A3A),
-            fontSize: game.size.y * 0.04,
+            fontSize: game.size.y * 0.045,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -92,7 +92,7 @@ class GameOverScreen extends PositionComponent with HasGameReference<MyGame> {
 
   Future<void> _addTitle() async {
     Sprite? title;
-    for (final file in ['gameover.png', 'gameover.jpg']) {
+    for (final file in ['masterpiece.png', 'masterpiece.jpg']) {
       try {
         title = await Sprite.load(file);
         break;
@@ -113,7 +113,7 @@ class GameOverScreen extends PositionComponent with HasGameReference<MyGame> {
     } else {
       add(
         TextComponent(
-          text: 'GAME OVER',
+          text: 'MASTERPIECE',
           anchor: Anchor.center,
           position: Vector2(game.size.x / 2, game.size.y * 0.15),
           textRenderer: TextPaint(

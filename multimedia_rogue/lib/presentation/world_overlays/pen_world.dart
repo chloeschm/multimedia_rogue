@@ -5,6 +5,7 @@ import 'package:flame/components.dart';
 import 'package:multimedia_rogue/main.dart';
 import 'package:multimedia_rogue/presentation/components/enemy/pen_enemy.dart';
 import 'package:multimedia_rogue/presentation/components/exit_door.dart';
+import 'package:multimedia_rogue/presentation/world_overlays/marker_world.dart';
 
 class PenWorld extends PositionComponent with HasGameReference<MyGame> {
   PenWorld() : super(priority: -10);
@@ -15,10 +16,21 @@ class PenWorld extends PositionComponent with HasGameReference<MyGame> {
     add(_DraftingPaperBackground()..size = size);
     add(PenEnemyDisplay());
 
-    final door = PenExitDoor()
+    final door = PenExitDoor(onEnter: _enterMarkerWorld)
       ..size = Vector2(game.size.x * 0.025, game.size.y * 0.3)
       ..position = Vector2(game.size.x * 0.975, game.size.y * 0.35);
     add(door);
+  }
+
+  void _enterMarkerWorld() {
+    final screen = parent;
+    if (screen == null) return;
+    (game.characterDisplay as PositionComponent?)?.position = Vector2(
+      game.size.x * 0.08,
+      game.size.y * 0.55,
+    );
+    screen.add(MarkerWorld());
+    removeFromParent();
   }
 }
 

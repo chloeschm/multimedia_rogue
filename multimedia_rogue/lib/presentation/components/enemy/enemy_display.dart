@@ -1,5 +1,6 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:multimedia_rogue/main.dart';
 
 abstract class EnemyDisplay extends PositionComponent
@@ -14,12 +15,15 @@ abstract class EnemyDisplay extends PositionComponent
 abstract class Enemy extends SpriteComponent with HasGameReference<MyGame> {
   final double speed;
   final int chasePack;
+  final int maxHp;
+  late int hp = maxHp;
 
   Enemy({
     required Vector2 position,
     required Vector2 size,
     this.speed = 50.0,
     this.chasePack = 1,
+    this.maxHp = 1,
   }) : super(position: position, size: size);
 
   @override
@@ -38,7 +42,10 @@ abstract class Enemy extends SpriteComponent with HasGameReference<MyGame> {
   @override
   void update(double dt) {
     super.update(dt);
+    behave(dt);
+  }
 
+  void behave(double dt) {
     final playerPos = (game.characterDisplay as PositionComponent?)?.position;
     if (playerPos != null && _isNearestToPlayer(playerPos)) {
       final toPlayer = playerPos - position;
@@ -58,6 +65,11 @@ abstract class Enemy extends SpriteComponent with HasGameReference<MyGame> {
     }
   }
 
+  void takeHit(int damage) {
+    hp -= damage;
+    if (hp <= 0) die();
+  }
+
   bool _isNearestToPlayer(Vector2 playerPos) {
     final siblings = parent?.children.whereType<Enemy>();
     if (siblings == null) return true;
@@ -74,6 +86,7 @@ abstract class Enemy extends SpriteComponent with HasGameReference<MyGame> {
   }
 
   void die() {
+    FlameAudio.play('splat.wav');
     removeFromParent();
   }
 }

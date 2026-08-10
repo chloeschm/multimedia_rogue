@@ -1,6 +1,6 @@
 import 'package:flame/components.dart';
 import 'package:multimedia_rogue/domain/entities/medium.dart';
-import 'package:multimedia_rogue/presentation/components/character/character_animations.dart';
+import 'package:multimedia_rogue/domain/entities/animation_state.dart';
 
 const Map<MediumType, Map<AnimationState, List<List<double>>>> _rawAttachmentPoints = {
   MediumType.pencil: {

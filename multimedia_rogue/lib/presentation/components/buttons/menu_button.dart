@@ -6,6 +6,10 @@ import '../../mixins/drop_shadow.dart';
 
 class MenuButton extends SpriteComponent
     with TapCallbacks, HasDropShadow, HasGameReference<MyGame> {
+  final bool countsDraft;
+
+  MenuButton({this.countsDraft = false});
+
   @override
   Future<void> onLoad() async {
     sprite = await Sprite.load('menu.png');
@@ -18,9 +22,10 @@ class MenuButton extends SpriteComponent
       Colors.black.withOpacity(0.4),
       BlendMode.darken,
     );
-    game.resumeEngine();                      
-    game.router.pop();                      
-    game.router.pushReplacementNamed('start'); 
+    if (countsDraft) game.draftCount++;
+    game.resumeEngine();
+    game.router.pop();
+    game.router.pushReplacementNamed('start');
   }
 
   @override

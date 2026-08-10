@@ -1,23 +1,33 @@
+import 'dart:math';
+
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flame_audio/flame_audio.dart';
-import 'package:flutter/animation.dart';
 import 'package:multimedia_rogue/data/medium_weapon_assets.dart';
-import 'package:multimedia_rogue/data/weapon_attachment_points.dart';
+import 'package:multimedia_rogue/domain/entities/animation_state.dart';
 import 'package:multimedia_rogue/domain/entities/medium.dart';
 import 'package:multimedia_rogue/main.dart';
-import 'package:multimedia_rogue/presentation/components/combat/ink_shot.dart';
+import 'package:multimedia_rogue/presentation/components/character/character_animations.dart';
 import 'package:multimedia_rogue/presentation/components/combat/player_contact_hitbox.dart';
-import 'package:multimedia_rogue/presentation/components/combat/swing_hitbox.dart';
 import 'package:multimedia_rogue/presentation/components/enemy/enemy_display.dart';
-import 'character_animations.dart';
-import '../../mixins/drop_shadow.dart';
+import 'package:multimedia_rogue/presentation/components/weapons/weapon_factory.dart';
+import 'package:multimedia_rogue/presentation/mixins/drop_shadow.dart';
 
 class CharacterDisplay extends PositionComponent with HasGameReference<MyGame> {
   PositionComponent? _sprite;
   int _generation = 0;
   double speed = 200.0;
   bool _placed = false;
+  int _puddleContacts = 0;
+  double _hitFlash = 0.0;
+
+  void enterPuddle() => _puddleContacts++;
+
+  void exitPuddle() {
+    if (_puddleContacts > 0) _puddleContacts--;
+  }
+
+  void flashHit() => _hitFlash = 0.8;
 
   @override
   void onMount() {
@@ -40,8 +50,8 @@ class CharacterDisplay extends PositionComponent with HasGameReference<MyGame> {
     if (_sprite == null) return;
     final dir = game.movementController.direction;
 
-    if (_sprite is _AnimatedCharacter) {
-      final animated = _sprite as _AnimatedCharacter;
+    if (_sprite is AnimatedCharacter) {
+      final animated = _sprite as AnimatedCharacter;
       animated.setState(
         dir.length > 0 ? AnimationState.run : AnimationState.idle,
       );
@@ -49,7 +59,24 @@ class CharacterDisplay extends PositionComponent with HasGameReference<MyGame> {
     }
 
     if (dir.length > 0) {
-      position += dir * game.movementController.speed * dt;
+      final drawing =
+          game.movementController.isAttacking &&
+          game.selectedMedium == MediumType.marker;
+      final slow =
+          (_puddleContacts > 0 ? 0.45 : 1.0) * (drawing ? 0.7 : 1.0);
+      position += dir * game.movementController.speed * slow * dt;
+    }
+
+    if (_hitFlash > 0) {
+      _hitFlash -= dt;
+      final flashOpacity =
+          _hitFlash <= 0 || sin(_hitFlash * 25) <= 0 ? 1.0 : 0.35;
+      final visual = _sprite;
+      if (visual is SpriteAnimationComponent) {
+        visual.opacity = flashOpacity;
+      } else if (visual is SpriteComponent) {
+        visual.opacity = flashOpacity;
+      }
     }
 
     for (var enemy in game.children.whereType<Enemy>()) {
@@ -127,7 +154,7 @@ class CharacterDisplay extends PositionComponent with HasGameReference<MyGame> {
       }
 
       newSprite =
-          _AnimatedCharacter(
+          AnimatedCharacter(
               animations: animations,
               stepTimes: stepTimes,
               medium: medium,
@@ -154,7 +181,7 @@ class CharacterDisplay extends PositionComponent with HasGameReference<MyGame> {
   }
 }
 
-class _AnimatedCharacter extends SpriteAnimationComponent
+class AnimatedCharacter extends SpriteAnimationComponent
     with HasDropShadow, HasGameReference<MyGame> {
   final Map<AnimationState, SpriteAnimation> _animations;
   final Map<AnimationState, double> _stepTimes;
@@ -167,7 +194,7 @@ class _AnimatedCharacter extends SpriteAnimationComponent
   AnimationState get currentState => _currentState;
   int get currentFrameIndex => _currentFrameIndex;
 
-  _AnimatedCharacter({
+  AnimatedCharacter({
     required Map<AnimationState, SpriteAnimation> animations,
     required Map<AnimationState, double> stepTimes,
     this.medium,
@@ -179,17 +206,23 @@ class _AnimatedCharacter extends SpriteAnimationComponent
   Future<void> onLoad() async {
     await super.onLoad();
 
-    final asset = medium != null ? mediumWeaponAssets[medium!] : null;
-    if (asset != null) {
+    final currentMedium = medium;
+    final asset =
+        currentMedium != null ? mediumWeaponAssets[currentMedium] : null;
+    if (asset != null && currentMedium != null) {
       final img = await game.images.load(asset.spritePath);
       final weaponSize = Vector2(size.x * 0.32, size.x * 0.32);
-      final weapon = _WeaponSprite(host: this)
+      final weapon = createWeapon(this, currentMedium)
         ..sprite = Sprite(img)
         ..size = weaponSize
         ..anchor = Anchor.center
         ..angle = asset.angle;
       add(weapon);
     }
+  }
+
+  void spawnInWorld(Component component) {
+    (game.characterDisplay as PositionComponent?)?.parent?.add(component);
   }
 
   @override
@@ -227,96 +260,6 @@ class _AnimatedCharacter extends SpriteAnimationComponent
     } else if (dirX > 0) {
       scale.x = 1;
     }
-  }
-}
-
-class _WeaponSprite extends SpriteComponent {
-  final _AnimatedCharacter host;
-  _WeaponSprite({required this.host});
-
-  static const double _raise = 1.2;
-  static const double _sweep = 1.5;
-  static const double _offsetX = 0.08;
-  static const double _offsetY = -0.10;
-
-  bool _wasAttacking = false;
-  bool _swinging = false;
-
-  @override
-  void update(double dt) {
-    super.update(dt);
-
-    final attacking = host.game.movementController.isAttacking;
-    if (attacking && !_wasAttacking && !_swinging) {
-      _startSwing();
-    }
-    _wasAttacking = attacking;
-
-    final medium = host.medium;
-    if (medium == null) return;
-    final offset = getAttachmentPoint(
-      medium,
-      host.currentState,
-      host.currentFrameIndex,
-    );
-    if (offset == null) return;
-    position = Vector2(
-      (offset.x + _offsetX) * host.size.x,
-      (offset.y + _offsetY) * host.size.y,
-    );
-  }
-
-  void _startSwing() {
-    _swinging = true;
-    final rest = angle;
-    final isRanged = host.medium == MediumType.pen;
-
-    SwingHitbox? swingBox;
-    if (isRanged) {
-      _shootInk();
-    } else {
-      swingBox = SwingHitbox(
-        damage: 1,
-        offset: Vector2(size.x * 0.8, size.y * 0.1),
-        radius: host.medium == MediumType.pencil ? 1.4 : 0.9,
-        weaponSize: size,
-      );
-      add(swingBox);
-    }
-
-    final raise = isRanged ? _raise * 0.4 : _raise;
-    final sweep = isRanged ? _sweep * 0.3 : _sweep;
-    add(
-      SequenceEffect(
-        [
-          RotateEffect.to(
-            rest - raise,
-            EffectController(duration: 0.06, curve: Curves.easeOut),
-          ),
-          RotateEffect.to(
-            rest + sweep,
-            EffectController(duration: 0.12, curve: Curves.easeIn),
-          ),
-          RotateEffect.to(
-            rest,
-            EffectController(duration: 0.18, curve: Curves.easeOut),
-          ),
-        ],
-        onComplete: () {
-          swingBox?.removeFromParent();
-          _swinging = false;
-        },
-      ),
-    );
-  }
-
-  void _shootInk() {
-    final facing = host.scale.x >= 0 ? 1.0 : -1.0;
-    final shot = InkShot(
-      direction: Vector2(facing, 0),
-      position: absolutePosition,
-    );
-    (host.game.characterDisplay as PositionComponent?)?.parent?.add(shot);
   }
 }
 

@@ -16,7 +16,6 @@ class InkShot extends PositionComponent
         position: position,
         size: Vector2.all(14),
         anchor: Anchor.center,
-        priority: -5,
       );
 
   @override
@@ -44,7 +43,7 @@ class InkShot extends PositionComponent
   ) {
     super.onCollisionStart(intersectionPoints, other);
     if (other is Enemy) {
-      other.die();
+      other.takeHit(1);
       removeFromParent();
     }
   }

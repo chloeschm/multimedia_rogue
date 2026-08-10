@@ -11,6 +11,7 @@ import 'package:multimedia_rogue/presentation/components/weapons/weapon_slots.da
 import 'package:multimedia_rogue/presentation/input/movement_controller.dart';
 import 'package:multimedia_rogue/presentation/screens/game_screen.dart';
 import 'package:multimedia_rogue/presentation/screens/game_over_screen.dart';
+import 'package:multimedia_rogue/presentation/screens/victory_screen.dart';
 import 'package:multimedia_rogue/presentation/screens/pause_overlay.dart';
 import 'package:multimedia_rogue/presentation/screens/start_screen.dart';
 import 'package:multimedia_rogue/presentation/screens/settings_screen.dart';
@@ -46,6 +47,7 @@ class MyGame extends FlameGame
         'game': Route(GameScreen.new, maintainState: false),
         'pause': Route(PauseOverlay.new, transparent: true),
         'gameover': Route(GameOverScreen.new, maintainState: false),
+        'victory': Route(VictoryScreen.new, maintainState: false),
       },
       initialRoute: 'start',
     );
