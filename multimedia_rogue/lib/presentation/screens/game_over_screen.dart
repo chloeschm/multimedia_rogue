@@ -16,7 +16,6 @@ class GameOverScreen extends PositionComponent with HasGameReference<MyGame> {
 
   @override
   Future<void> onLoad() async {
-    print('Game size: ${game.size}');
     size = game.size;
     game.draftCount++;
     FlameAudio.play('womp.m4a');
